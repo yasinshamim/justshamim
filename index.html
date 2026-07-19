@@ -2,64 +2,80 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
-        #ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; }
-        #joystick { position: absolute; bottom: 50px; left: 50px; width: 100px; height: 100px; border: 2px solid white; border-radius: 50%; display: none; }
-        #knob { width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; top: 30px; left: 30px; }
+        body { margin: 0; background: #050505; color: #fff; font-family: Tahoma, sans-serif; overflow: hidden; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: #000; transition: opacity 1s; }
+        .msg { font-size: 20px; margin: 10px; opacity: 0; transition: opacity 1s; }
+        input { padding: 10px; border-radius: 20px; border: none; margin-bottom: 10px; text-align: center; }
+        button { padding: 10px 30px; border-radius: 20px; border: none; background: #ff4d6d; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div id="ui">
-        <div id="msg"></div>
-        <div id="login" style="display:none;">
-            <input type="password" id="pass" placeholder="رمز...">
-            <button onclick="check()">ورود</button>
+    <div id="overlay">
+        <div id="text-container"></div>
+        <div id="login-box" style="display:none;">
+            <input type="password" id="pass" placeholder="رمز رو وارد کن..." maxlength="4">
+            <br>
+            <button onclick="check()">ورود به فضا</button>
         </div>
     </div>
-    <div id="joystick"><div id="knob"></div></div>
     <canvas id="canvas"></canvas>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const msgs = ["سلام جوجه کوچولو 🐥💕", "این سایتو خودم برات ساختم", "شاید خیلی حرفه‌ای نباشه", "ولی تک‌تک لحظه‌ها به تو فکر می‌کردم"];
-        let idx = 0;
-        function showMsgs() {
-            if(idx < msgs.length) {
-                document.getElementById('msg').innerText = msgs[idx++];
-                setTimeout(showMsgs, 2500);
-            } else { document.getElementById('login').style.display = 'block'; }
+        const msgs = ["سلام جوجه کوچولو 🐥💕", "اینجا فضایِ اختصاصیِ ماست", "فقط تو و من...", "رمز رو بزن تا ستاره‌مون رو پیدا کنیم"];
+        let container = document.getElementById('text-container');
+        
+        async function runIntro() {
+            for(let m of msgs) {
+                let div = document.createElement('div');
+                div.className = 'msg'; div.innerText = m;
+                container.appendChild(div);
+                await new Promise(r => setTimeout(r, 500));
+                div.style.opacity = 1;
+                await new Promise(r => setTimeout(r, 2000));
+                div.style.opacity = 0;
+            }
+            document.getElementById('login-box').style.display = 'block';
         }
-        showMsgs();
+        runIntro();
 
         function check() {
             if(document.getElementById('pass').value == "1130" || document.getElementById('pass').value == "66") {
-                document.getElementById('ui').style.display = 'none';
-                document.getElementById('joystick').style.display = 'block';
+                document.getElementById('overlay').style.opacity = 0;
+                setTimeout(() => document.getElementById('overlay').style.display = 'none', 1000);
                 initSpace();
-            }
+            } else { alert("ای کلک! اشتباهه 😂"); }
         }
 
         function initSpace() {
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas')});
+            const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            // ستاره‌ها
-            for(let i=0; i<500; i++) {
-                const s = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({color: 0xffffff}));
-                s.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
-                scene.add(s);
+            // ستاره‌های رنگی و درخشان
+            const geom = new THREE.BufferGeometry();
+            const pos = [];
+            for(let i=0; i<2000; i++) {
+                pos.push((Math.random()-0.5)*200, (Math.random()-0.5)*200, (Math.random()-0.5)*200);
             }
+            geom.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            const mat = new THREE.PointsMaterial({size: 0.2, color: 0xffffff});
+            scene.add(new THREE.Points(geom, mat));
+
+            // ستاره طلایی مقصد
+            const goldStar = new THREE.Mesh(new THREE.SphereGeometry(3), new THREE.MeshBasicMaterial({color: 0xffcc00}));
+            goldStar.position.set(0, 0, -50);
+            scene.add(goldStar);
+
+            camera.position.z = 10;
             
-            camera.position.z = 5;
-            
-            // حرکت با جوی‌استیک
-            const knob = document.getElementById('knob');
-            document.getElementById('joystick').addEventListener('touchmove', (e) => {
-                camera.rotation.y += (e.touches[0].clientX - 100) * 0.0001;
-                camera.rotation.x += (e.touches[0].clientY - 100) * 0.0001;
+            // حرکت با لمس صفحه
+            window.addEventListener('touchmove', (e) => {
+                camera.rotation.y += e.changedTouches[0].clientX * 0.00001;
+                camera.rotation.x += e.changedTouches[0].clientY * 0.00001;
             });
 
             function animate() {
