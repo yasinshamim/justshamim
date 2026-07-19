@@ -1,83 +1,73 @@
-# Generating the full HTML code for the requested space exploration site
-html_content = """
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>For Shamim</title>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: Tahoma, Arial, sans-serif; }
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; text-align: center; z-index: 10; padding: 20px; box-sizing: border-box; }
-        #login-page { background: rgba(0,0,0,0.8); padding: 30px; border-radius: 15px; }
-        input { padding: 12px; border-radius: 8px; border: none; width: 150px; text-align: center; font-size: 16px; margin: 10px 0; }
-        button { padding: 10px 25px; border-radius: 8px; border: none; background: #ff4d6d; color: white; font-size: 16px; cursor: pointer; }
-        #joystick { position: absolute; bottom: 30px; left: 30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; display: none; z-index: 20; touch-action: none; }
-        canvas { display: block; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        #ui { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 10; }
+        #joystick { position: absolute; bottom: 50px; left: 50px; width: 100px; height: 100px; border: 2px solid white; border-radius: 50%; display: none; }
+        #knob { width: 40px; height: 40px; background: white; border-radius: 50%; position: absolute; top: 30px; left: 30px; }
     </style>
 </head>
 <body>
-
-<div id="ui-layer">
-    <div id="login-page">
-        <h2>سلام جوجه کوچولو 🐥💕</h2>
-        <p>این سایتو خودم برات ساختم</p>
-        <p>شاید خیلی حرفه‌ای نباشه ولی تک‌تک لحظه‌هایی که داشتم درستش می‌کردم، به تو فکر می‌کردم.</p>
-        <input type="password" id="pass" placeholder="رمز..." maxlength="4">
-        <br>
-        <button onclick="check()">ورود به فضا</button>
+    <div id="ui">
+        <div id="msg"></div>
+        <div id="login" style="display:none;">
+            <input type="password" id="pass" placeholder="رمز...">
+            <button onclick="check()">ورود</button>
+        </div>
     </div>
-</div>
+    <div id="joystick"><div id="knob"></div></div>
+    <canvas id="canvas"></canvas>
 
-<div id="joystick"></div>
-<canvas id="space-canvas"></canvas>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const msgs = ["سلام جوجه کوچولو 🐥💕", "این سایتو خودم برات ساختم", "شاید خیلی حرفه‌ای نباشه", "ولی تک‌تک لحظه‌ها به تو فکر می‌کردم"];
+        let idx = 0;
+        function showMsgs() {
+            if(idx < msgs.length) {
+                document.getElementById('msg').innerText = msgs[idx++];
+                setTimeout(showMsgs, 2500);
+            } else { document.getElementById('login').style.display = 'block'; }
+        }
+        showMsgs();
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-    let scene, camera, renderer, stars = [];
-    const ui = document.getElementById('ui-layer');
-    
-    function check() {
-        const p = document.getElementById('pass').value;
-        if(p === "1130" || p === "66") {
-            ui.style.display = 'none';
-            document.getElementById('joystick').style.display = 'block';
-            initSpace();
-        } else { alert("ای کلک! کد اشتباهه 😂❤️"); }
-    }
-
-    function initSpace() {
-        scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-        renderer = new THREE.WebGLRenderer({canvas: document.getElementById('space-canvas')});
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        // Stars
-        for(let i=0; i<1000; i++) {
-            const geo = new THREE.SphereGeometry(0.2, 8, 8);
-            const mat = new THREE.MeshBasicMaterial({color: 0xffffff});
-            const star = new THREE.Mesh(geo, mat);
-            star.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
-            scene.add(star);
+        function check() {
+            if(document.getElementById('pass').value == "1130" || document.getElementById('pass').value == "66") {
+                document.getElementById('ui').style.display = 'none';
+                document.getElementById('joystick').style.display = 'block';
+                initSpace();
+            }
         }
 
-        // Final Star
-        const bigStar = new THREE.Mesh(new THREE.SphereGeometry(2, 32, 32), new THREE.MeshBasicMaterial({color: 0xffcc00}));
-        bigStar.position.set(0, 0, -20);
-        scene.add(bigStar);
+        function initSpace() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas')});
+            renderer.setSize(window.innerWidth, window.innerHeight);
 
-        camera.position.z = 5;
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
+            // ستاره‌ها
+            for(let i=0; i<500; i++) {
+                const s = new THREE.Mesh(new THREE.SphereGeometry(0.1), new THREE.MeshBasicMaterial({color: 0xffffff}));
+                s.position.set((Math.random()-0.5)*100, (Math.random()-0.5)*100, (Math.random()-0.5)*100);
+                scene.add(s);
+            }
+            
+            camera.position.z = 5;
+            
+            // حرکت با جوی‌استیک
+            const knob = document.getElementById('knob');
+            document.getElementById('joystick').addEventListener('touchmove', (e) => {
+                camera.rotation.y += (e.touches[0].clientX - 100) * 0.0001;
+                camera.rotation.x += (e.touches[0].clientY - 100) * 0.0001;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+            }
+            animate();
         }
-        animate();
-    }
-</script>
+    </script>
 </body>
 </html>
-"""
-
-# Saving the file
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
