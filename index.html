@@ -1,89 +1,114 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body { margin: 0; background: #050505; color: #fff; font-family: Tahoma, sans-serif; overflow: hidden; }
-        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; background: #000; transition: opacity 1s; }
-        .msg { font-size: 20px; margin: 10px; opacity: 0; transition: opacity 1s; }
-        input { padding: 10px; border-radius: 20px; border: none; margin-bottom: 10px; text-align: center; }
-        button { padding: 10px 30px; border-radius: 20px; border: none; background: #ff4d6d; color: white; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>برای شمیم ❤️</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script async src="https://unpkg.com/es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+
+<script type="importmap">
+{
+"imports":{
+"three":"https://unpkg.com/three@0.166.1/build/three.module.js"
+}
+}
+</script>
+
 </head>
+
 <body>
-    <div id="overlay">
-        <div id="text-container"></div>
-        <div id="login-box" style="display:none;">
-            <input type="password" id="pass" placeholder="رمز رو وارد کن..." maxlength="4">
-            <br>
-            <button onclick="check()">ورود به فضا</button>
-        </div>
-    </div>
-    <canvas id="canvas"></canvas>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script>
-        const msgs = ["سلام جوجه کوچولو 🐥💕", "اینجا فضایِ اختصاصیِ ماست", "فقط تو و من...", "رمز رو بزن تا ستاره‌مون رو پیدا کنیم"];
-        let container = document.getElementById('text-container');
-        
-        async function runIntro() {
-            for(let m of msgs) {
-                let div = document.createElement('div');
-                div.className = 'msg'; div.innerText = m;
-                container.appendChild(div);
-                await new Promise(r => setTimeout(r, 500));
-                div.style.opacity = 1;
-                await new Promise(r => setTimeout(r, 2000));
-                div.style.opacity = 0;
-            }
-            document.getElementById('login-box').style.display = 'block';
-        }
-        runIntro();
+<div id="intro">
 
-        function check() {
-            if(document.getElementById('pass').value == "1130" || document.getElementById('pass').value == "66") {
-                document.getElementById('overlay').style.opacity = 0;
-                setTimeout(() => document.getElementById('overlay').style.display = 'none', 1000);
-                initSpace();
-            } else { alert("ای کلک! اشتباهه 😂"); }
-        }
+<h1>سلام جوجه کوچولو 🐥💕</h1>
 
-        function initSpace() {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('canvas'), antialias: true});
-            renderer.setSize(window.innerWidth, window.innerHeight);
+<p>
+این سایتو خودم برات ساختم...
+</p>
 
-            // ستاره‌های رنگی و درخشان
-            const geom = new THREE.BufferGeometry();
-            const pos = [];
-            for(let i=0; i<2000; i++) {
-                pos.push((Math.random()-0.5)*200, (Math.random()-0.5)*200, (Math.random()-0.5)*200);
-            }
-            geom.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-            const mat = new THREE.PointsMaterial({size: 0.2, color: 0xffffff});
-            scene.add(new THREE.Points(geom, mat));
+<p>
+شاید خیلی حرفه‌ای نباشه،
+ولی تک‌تک لحظه‌هایی که داشتم درستش می‌کردم،
+به تو فکر می‌کردم. ❤️
+</p>
 
-            // ستاره طلایی مقصد
-            const goldStar = new THREE.Mesh(new THREE.SphereGeometry(3), new THREE.MeshBasicMaterial({color: 0xffcc00}));
-            goldStar.position.set(0, 0, -50);
-            scene.add(goldStar);
+<button id="startBtn">
+بریم 🚀
+</button>
 
-            camera.position.z = 10;
-            
-            // حرکت با لمس صفحه
-            window.addEventListener('touchmove', (e) => {
-                camera.rotation.y += e.changedTouches[0].clientX * 0.00001;
-                camera.rotation.x += e.changedTouches[0].clientY * 0.00001;
-            });
+</div>
 
-            function animate() {
-                requestAnimationFrame(animate);
-                renderer.render(scene, camera);
-            }
-            animate();
-        }
-    </script>
+
+<div id="passwordPage" class="hidden">
+
+<h2>
+یه رمز کوچولو وارد کن 💕
+</h2>
+
+<input
+id="password"
+type="password"
+placeholder="مثلاً 1130"
+/>
+
+<button id="enterBtn">
+ورود
+</button>
+
+<p id="error"></p>
+
+</div>
+
+
+<div id="birthday" class="hidden">
+
+<h1>
+🎂
+تولدت مبارک شمیم
+🎂
+</h1>
+
+<p>
+
+امیدوارم امسال
+پر از خنده
+پر از آرامش
+و پر از اتفاقای قشنگ برات باشه ❤️
+
+</p>
+
+<button id="continueBtn">
+
+بریم بین ستاره‌ها ✨
+
+</button>
+
+</div>
+
+
+<div id="messageBox" class="hidden">
+
+<div id="messageText"></div>
+
+</div>
+
+
+<div id="joystick">
+
+<div id="stick"></div>
+
+</div>
+
+
+<canvas id="bg"></canvas>
+
+<script src="messages.js"></script>
+
+<script type="module" src="main.js"></script>
+
 </body>
 </html>
