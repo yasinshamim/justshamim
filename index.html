@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>برای شمیم ❤️</title>
 
@@ -22,93 +25,90 @@
 
 <body>
 
-<div id="intro">
+<canvas id="space"></canvas>
 
-<h1>سلام جوجه کوچولو 🐥💕</h1>
+<div id="overlay"></div>
 
-<p>
-این سایتو خودم برات ساختم...
-</p>
+<section id="intro">
 
-<p>
-شاید خیلی حرفه‌ای نباشه،
-ولی تک‌تک لحظه‌هایی که داشتم درستش می‌کردم،
-به تو فکر می‌کردم. ❤️
-</p>
+<div id="introContainer">
 
-<button id="startBtn">
-بریم 🚀
-</button>
+<div id="typingText"></div>
 
 </div>
 
+</section>
 
-<div id="passwordPage" class="hidden">
+<section id="passwordPage">
 
-<h2>
-یه رمز کوچولو وارد کن 💕
-</h2>
+<div class="glass">
+
+<h1>یه رمز کوچولو وارد کن 💕</h1>
 
 <input
 id="password"
 type="password"
-placeholder="مثلاً 1130"
-/>
+placeholder="رمز..."
+autocomplete="off"
+>
 
 <button id="enterBtn">
+
 ورود
+
 </button>
 
 <p id="error"></p>
 
 </div>
 
+</section>
 
-<div id="birthday" class="hidden">
+<section id="loadingPage">
 
-<h1>
-🎂
-تولدت مبارک شمیم
-🎂
-</h1>
+<div class="loader"></div>
 
-<p>
+<h2>
 
-امیدوارم امسال
-پر از خنده
-پر از آرامش
-و پر از اتفاقای قشنگ برات باشه ❤️
+درحال سفر بین ستاره‌ها...
 
-</p>
+</h2>
 
-<button id="continueBtn">
+</section>
 
-بریم بین ستاره‌ها ✨
+<div id="gameUI">
 
-</button>
-
-</div>
-
-
-<div id="messageBox" class="hidden">
+<div id="messageBox">
 
 <div id="messageText"></div>
 
 </div>
 
+<div id="musicBtn">
 
-<div id="joystick">
-
-<div id="stick"></div>
+🎵
 
 </div>
 
+<div id="joystick"></div>
 
-<canvas id="bg"></canvas>
+</div>
 
-<script src="messages.js"></script>
+<audio
+id="bgMusic"
+loop
+preload="auto">
+
+<source
+src="music.mp3"
+type="audio/mpeg">
+
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/nipplejs@0.10.1/dist/nipplejs.min.js"></script>
 
 <script type="module" src="main.js"></script>
 
 </body>
+
 </html>
