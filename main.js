@@ -1,421 +1,137 @@
-const starTexture = new THREE.TextureLoader().load(
-"https://threejs.org/examples/textures/sprites/disc.png"
-);
+import * as THREE from "three";
+import messages from "./messages.js";
 
-const starGeometry = new THREE.BufferGeometry();
+const canvas=document.getElementById("space");
 
-const starCount = 6000;
+const intro=document.getElementById("intro");
+const typingText=document.getElementById("typingText");
 
-const positions = [];
+const passwordPage=document.getElementById("passwordPage");
+const password=document.getElementById("password");
+const enterBtn=document.getElementById("enterBtn");
+const error=document.getElementById("error");
 
-for(let i=0;i<starCount;i++){
+const loadingPage=document.getElementById("loadingPage");
+const gameUI=document.getElementById("gameUI");
 
-positions.push(
+const messageBox=document.getElementById("messageBox");
+const messageText=document.getElementById("messageText");
 
-( Math.random()-0.5 )*3000,
+const overlay=document.getElementById("overlay");
 
-( Math.random()-0.5 )*3000,
+const bgMusic=document.getElementById("bgMusic");
+const musicBtn=document.getElementById("musicBtn");
 
-( Math.random()-0.5 )*3000
+const scene=new THREE.Scene();
 
-);
+const camera=new THREE.PerspectiveCamera(
 
-}
+75,
 
-starGeometry.setAttribute(
+window.innerWidth/window.innerHeight,
 
-"position",
-
-new THREE.Float32BufferAttribute(
-
-positions,
-
-3
-
-)
-
-);
-
-const starMaterial = new THREE.PointsMaterial({
-
-size:2,
-
-map:starTexture,
-
-transparent:true,
-
-depthWrite:false,
-
-color:0xffffff,
-
-blending:THREE.AdditiveBlending
-
-});
-
-const galaxy=new THREE.Points(
-
-starGeometry,
-
-starMaterial
-
-);
-
-scene.add(galaxy);
-
-const messageStars=[];
-
-const glowGeometry=new THREE.SphereGeometry(
-
-1.4,
-
-24,
-
-24
-
-);
-
-for(let i=0;i<100;i++){
-
-const glowMaterial=new THREE.MeshBasicMaterial({
-
-color:0xffffff,
-
-transparent:true,
-
-opacity:.8
-
-});
-
-const glow=new THREE.Mesh(
-
-glowGeometry,
-
-glowMaterial
-
-);
-
-const r=220+Math.random()*800;
-
-const theta=Math.random()*Math.PI*2;
-
-const phi=Math.random()*Math.PI;
-
-glow.position.set(
-
-r*Math.sin(phi)*Math.cos(theta),
-
-r*Math.cos(phi),
-
-r*Math.sin(phi)*Math.sin(theta)
-
-);
-
-scene.add(glow);
-
-messageStars.push(glow);
-
-}
-
-stars=messageStars;
-
-const shootingStars=[];
-
-function createMeteor(){
-
-const g=new THREE.SphereGeometry(.5,8,8);
-
-const m=new THREE.MeshBasicMaterial({
-
-color:0xffffff
-
-});
-
-const meteor=new THREE.Mesh(g,m);
-
-meteor.position.set(
-
-800,
-
-300+Math.random()*400,
-
--800
-
-);
-
-meteor.userData.speed=
-
-8+Math.random()*6;
-
-scene.add(meteor);
-
-shootingStars.push(meteor);
-
-}
-
-setInterval(createMeteor,4500);
-const sunLight=new THREE.PointLight(
-
-0xffdd66,
-
-18,
+0.1,
 
 5000
 
 );
 
-sunLight.position.set(
+camera.position.set(0,0,0);
 
-240,
+const renderer=new THREE.WebGLRenderer({
 
-80,
+canvas,
 
--650
-
-);
-
-scene.add(sunLight);
-
-const moonLight=new THREE.PointLight(
-
-0x88bbff,
-
-2,
-
-1200
-
-);
-
-moonLight.position.set(
-
--220,
-
-60,
-
--420
-
-);
-
-scene.add(moonLight);
-
-const particles=[];
-
-for(let i=0;i<700;i++){
-
-const geo=new THREE.SphereGeometry(
-
-0.12,
-
-4,
-
-4
-
-);
-
-const mat=new THREE.MeshBasicMaterial({
-
-color:0xffffff,
-
-transparent:true,
-
-opacity:Math.random()
+antialias:true
 
 });
 
-const p=new THREE.Mesh(
+renderer.setSize(
 
-geo,
+window.innerWidth,
 
-mat
-
-);
-
-p.position.set(
-
-(Math.random()-0.5)*2000,
-
-(Math.random()-0.5)*2000,
-
-(Math.random()-0.5)*2000
+window.innerHeight
 
 );
 
-p.userData.speed=
+renderer.setPixelRatio(
 
-0.02+
-
-Math.random()*0.08;
-
-scene.add(p);
-
-particles.push(p);
-
-}
-
-let endingStarted=false;
-
-function checkSunDistance(){
-
-const d=camera.position.distanceTo(
-
-sunLight.position
+window.devicePixelRatio
 
 );
 
-if(
+const light=new THREE.AmbientLight(
 
-d<45&&
+0xffffff,
 
-!endingStarted
-
-){
-
-endingStarted=true;
-
-showBirthday();
-
-}
-
-}
-
-function showBirthday(){
-
-messageBox.style.opacity=1;
-
-messageText.innerHTML=`
-
-🎂<br><br>
-
-تولدت مبارک خورشید زندگیم ☀️❤️
-
-<br><br>
-
-امیدوارم همیشه بخندی...
-
-همیشه سالم باشی...
-
-همیشه خوشحال باشی...
-
-<br><br>
-
-دوستت دارم تا بی‌نهایت.
-
-<br><br>
-
-❤️ یاسین
-
-`;
-
-}
-function animateGalaxy(){
-
-galaxy.rotation.y+=0.00015;
-
-galaxy.rotation.x+=0.00005;
-
-for(const p of particles){
-
-p.position.y-=p.userData.speed;
-
-if(p.position.y<-1000){
-
-p.position.y=1000;
-
-}
-
-}
-
-for(const meteor of shootingStars){
-
-meteor.position.x-=meteor.userData.speed*4;
-
-meteor.position.y-=meteor.userData.speed*2;
-
-meteor.position.z+=meteor.userData.speed*3;
-
-if(
-
-meteor.position.x<-1200||
-
-meteor.position.y<-1200||
-
-meteor.position.z>1200
-
-){
-
-scene.remove(meteor);
-
-}
-
-}
-
-for(const s of stars){
-
-const t=clock.elapsedTime;
-
-s.scale.setScalar(
-
-1+
-
-Math.sin(
-
-t*2+
-
-s.position.x
-
-)*0.25
+2
 
 );
 
-}
+scene.add(light);
 
-checkSunDistance();
+const clock=new THREE.Clock();
 
-}
+let stars=[];
 
-function updateMessages(){
+let currentStar=-1;
 
-let nearest=-1;
+let moveX=0;
 
-let nearestDistance=20;
+let moveY=0;
 
-for(let i=0;i<stars.length;i++){
+let yaw=0;
 
-const d=camera.position.distanceTo(
+let pitch=0;
 
-stars[i].position
+let canMove=false;
 
-);
+const introTexts=[
 
-if(d<nearestDistance){
+"سلام جوجه کوچولوی من 🐥💕",
 
-nearestDistance=d;
+"این سایتو فقط برای تو ساختم...",
 
-nearest=i;
+"هر قسمت این سایت رو با عشق درست کردم...",
 
-}
+"حالا بیا باهم بین ستاره‌ها سفر کنیم... ✨"
 
-}
+];
 
-if(nearest!==-1){
+function wait(ms){
 
-if(currentMessage!==nearest){
-
-currentMessage=nearest;
-
-messageText.innerHTML=
-
-messages[nearest];
-
-messageBox.style.opacity=1;
+return new Promise(r=>setTimeout(r,ms));
 
 }
 
-}else{
+async function showIntro(){
 
-currentMessage=-1;
+for(const txt of introTexts){
 
-messageBox.style.opacity=0;
+typingText.innerHTML="";
+
+typingText.style.opacity=1;
+
+for(let i=0;i<txt.length;i++){
+
+typingText.innerHTML+=txt[i];
+
+await wait(45);
 
 }
 
+await wait(1700);
+
+typingText.style.opacity=0;
+
+await wait(700);
+
 }
+
+intro.style.display="none";
+
+passwordPage.style.display="flex";
+
+}
+
+showIntro();
