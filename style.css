@@ -1,39 +1,43 @@
+/* style.css */
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
 }
 
-html,body{
+html,
+body{
+
 width:100%;
 height:100%;
 overflow:hidden;
 background:#000;
-font-family:"Vazirmatn",sans-serif;
-touch-action:none;
+font-family:Tahoma,sans-serif;
+
 }
 
-canvas{
+#space{
+
 position:fixed;
-top:0;
-left:0;
+inset:0;
 width:100%;
 height:100%;
-display:block;
-z-index:0;
+
 }
 
 #overlay{
+
 position:fixed;
 inset:0;
 background:#000;
-opacity:1;
 transition:1.5s;
-pointer-events:none;
-z-index:9;
+z-index:5;
+
 }
 
 #intro{
+
 position:fixed;
 inset:0;
 display:flex;
@@ -41,180 +45,112 @@ justify-content:center;
 align-items:center;
 background:#000;
 z-index:10;
-padding:35px;
+
 }
 
 #introContainer{
-max-width:900px;
-width:100%;
-text-align:center;
+
+width:90%;
+max-width:800px;
+
 }
 
 #typingText{
-font-size:31px;
-font-weight:700;
-line-height:2;
+
 color:#fff;
+font-size:31px;
+line-height:2;
+text-align:center;
 min-height:220px;
-text-shadow:
-0 0 12px #fff,
-0 0 25px #9ddcff;
-opacity:1;
+
 }
 
 #passwordPage{
+
+display:none;
 position:fixed;
 inset:0;
-display:none;
 justify-content:center;
 align-items:center;
-background:rgba(0,0,0,.88);
+background:rgba(0,0,0,.85);
 backdrop-filter:blur(15px);
 z-index:20;
+
 }
 
 .glass{
 
-width:92%;
-
-max-width:430px;
-
+width:90%;
+max-width:420px;
 padding:35px;
-
-border-radius:28px;
-
+border-radius:25px;
 background:rgba(255,255,255,.08);
-
-border:1px solid rgba(255,255,255,.18);
-
-backdrop-filter:blur(25px);
-
-box-shadow:
-
-0 0 40px rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
 
 }
 
 .glass h1{
 
+color:#fff;
 text-align:center;
-
-margin-bottom:25px;
-
-font-size:31px;
+margin-bottom:20px;
 
 }
 
 .glass input{
 
 width:100%;
-
-padding:17px;
-
+padding:15px;
+font-size:20px;
 border:none;
-
 outline:none;
-
 border-radius:15px;
-
-background:#fff;
-
-font-size:21px;
-
 text-align:center;
-
-margin-bottom:18px;
+margin-bottom:15px;
 
 }
 
 .glass button{
 
 width:100%;
-
-padding:17px;
-
+padding:15px;
+font-size:20px;
 border:none;
-
 border-radius:15px;
-
-background:#ffffff;
-
-font-size:21px;
-
-font-weight:bold;
-
 cursor:pointer;
-
-transition:.25s;
-
-}
-
-.glass button:active{
-
-transform:scale(.96);
-
-}
-
-.glass p{
-
-margin-top:18px;
-
-text-align:center;
-
-opacity:.8;
 
 }
 
 #error{
 
-display:block;
-
+color:#ff7070;
 text-align:center;
-
-margin-top:15px;
-
-color:#ff7777;
-
-font-size:18px;
-
-min-height:25px;
+margin-top:12px;
+height:24px;
 
 }
 
 #loadingPage{
 
-position:fixed;
-
-inset:0;
-
 display:none;
-
+position:fixed;
+inset:0;
 justify-content:center;
-
 align-items:center;
-
 flex-direction:column;
-
 background:#000;
-
 z-index:30;
 
 }
+
 .loader{
 
-width:90px;
-
-height:90px;
-
+width:80px;
+height:80px;
 border-radius:50%;
-
-border:6px solid rgba(255,255,255,.12);
-
-border-top:6px solid white;
-
+border:6px solid rgba(255,255,255,.15);
+border-top:6px solid #fff;
 animation:spin 1s linear infinite;
-
-margin-bottom:35px;
 
 }
 
@@ -230,180 +166,69 @@ transform:rotate(360deg);
 
 #loadingPage h2{
 
-font-size:28px;
-
-text-align:center;
-
+margin-top:25px;
 color:#fff;
-
-text-shadow:0 0 18px #fff;
 
 }
 
 #gameUI{
 
-position:fixed;
-
-inset:0;
-
 display:none;
-
-z-index:5;
-
-pointer-events:none;
 
 }
 
 #messageBox{
 
 position:fixed;
-
-top:40px;
-
+top:25px;
 left:50%;
-
 transform:translateX(-50%);
-
-min-width:320px;
-
-max-width:90%;
-
-padding:18px 24px;
-
+padding:18px 25px;
 border-radius:20px;
-
 background:rgba(255,255,255,.08);
-
-backdrop-filter:blur(18px);
-
-border:1px solid rgba(255,255,255,.15);
-
+backdrop-filter:blur(12px);
+color:#fff;
 opacity:0;
-
-transition:.5s;
+transition:.35s;
+max-width:90%;
+z-index:4;
 
 }
 
 #messageText{
 
-font-size:22px;
-
+font-size:21px;
 text-align:center;
-
 line-height:1.8;
-
-color:white;
-
-}
-
-#joystick{
-
-position:fixed;
-
-bottom:35px;
-
-left:30px;
-
-width:140px;
-
-height:140px;
-
-border-radius:50%;
-
-background:rgba(255,255,255,.08);
-
-border:2px solid rgba(255,255,255,.15);
-
-display:none;
-
-pointer-events:auto;
-
-}
-
-#stick{
-
-position:absolute;
-
-width:60px;
-
-height:60px;
-
-left:40px;
-
-top:40px;
-
-border-radius:50%;
-
-background:white;
-
-box-shadow:
-
-0 0 20px rgba(255,255,255,.8);
 
 }
 
 #musicBtn{
 
 position:fixed;
-
-top:30px;
-
-right:30px;
-
-width:58px;
-
-height:58px;
-
+top:20px;
+right:20px;
+width:55px;
+height:55px;
 border-radius:50%;
-
-background:rgba(255,255,255,.1);
-
-backdrop-filter:blur(15px);
-
+background:rgba(255,255,255,.12);
 display:flex;
-
 justify-content:center;
-
 align-items:center;
-
-font-size:28px;
-
+color:#fff;
+font-size:26px;
 cursor:pointer;
-
-pointer-events:auto;
-
-border:1px solid rgba(255,255,255,.15);
-
-transition:.3s;
+z-index:4;
 
 }
 
-#musicBtn:active{
+#joystick{
 
-transform:scale(.9);
-
-}
-
-.hidden{
-
-display:none!important;
-
-}
-
-.fade{
-
-opacity:0!important;
-
-}
-
-.show{
-
-display:flex!important;
-
-}
-
-.visible{
-
-opacity:1!important;
+position:fixed;
+left:25px;
+bottom:25px;
+width:140px;
+height:140px;
+z-index:4;
 
 }
