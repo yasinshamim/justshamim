@@ -1,107 +1,70 @@
 import * as THREE from "three";
 import messages from "./messages.js";
 
-const canvas=document.getElementById("space");
+const canvas = document.getElementById("space");
 
-const intro=document.getElementById("intro");
-const typingText=document.getElementById("typingText");
+const intro = document.getElementById("intro");
+const typingText = document.getElementById("typingText");
 
-const passwordPage=document.getElementById("passwordPage");
-const password=document.getElementById("password");
-const enterBtn=document.getElementById("enterBtn");
-const error=document.getElementById("error");
+const passwordPage = document.getElementById("passwordPage");
+const password = document.getElementById("password");
+const enterBtn = document.getElementById("enterBtn");
+const error = document.getElementById("error");
 
-const loadingPage=document.getElementById("loadingPage");
-const gameUI=document.getElementById("gameUI");
+const loadingPage = document.getElementById("loadingPage");
+const gameUI = document.getElementById("gameUI");
 
-const messageBox=document.getElementById("messageBox");
-const messageText=document.getElementById("messageText");
+const messageBox = document.getElementById("messageBox");
+const messageText = document.getElementById("messageText");
 
-const overlay=document.getElementById("overlay");
+const overlay = document.getElementById("overlay");
 
-const bgMusic=document.getElementById("bgMusic");
-const musicBtn=document.getElementById("musicBtn");
+const bgMusic = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
 
-const scene=new THREE.Scene();
+const scene = new THREE.Scene();
 
-const camera=new THREE.PerspectiveCamera(
-
+const camera = new THREE.PerspectiveCamera(
 75,
-
-window.innerWidth/window.innerHeight,
-
+window.innerWidth / window.innerHeight,
 0.1,
-
 5000
-
 );
 
 camera.position.set(0,0,0);
 
-const renderer=new THREE.WebGLRenderer({
-
+const renderer = new THREE.WebGLRenderer({
 canvas,
-
 antialias:true
-
 });
 
-renderer.setSize(
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 
-window.innerWidth,
+scene.add(new THREE.AmbientLight(0xffffff,2));
 
-window.innerHeight
+const clock = new THREE.Clock();
 
-);
+let stars = [];
+let currentStar = -1;
 
-renderer.setPixelRatio(
+let moveX = 0;
+let moveY = 0;
 
-window.devicePixelRatio
+let yaw = 0;
+let pitch = 0;
 
-);
+let canMove = false;
 
-const light=new THREE.AmbientLight(
-
-0xffffff,
-
-2
-
-);
-
-scene.add(light);
-
-const clock=new THREE.Clock();
-
-let stars=[];
-
-let currentStar=-1;
-
-let moveX=0;
-
-let moveY=0;
-
-let yaw=0;
-
-let pitch=0;
-
-let canMove=false;
-
-const introTexts=[
-
+const introTexts = [
 "سلام جوجه کوچولوی من 🐥💕",
-
 "این سایتو فقط برای تو ساختم...",
-
-"شاید خیلی حرفه ای نباشه ولی هر قسمت این سایت رو با فکر تو درست کردم...",
-
+"شاید خیلی حرفه‌ای نباشه، ولی با عشق ساختمش...",
 "امیدوارم خوشت بیاد... ✨"
-  
 ];
 
 function wait(ms){
-
 return new Promise(r=>setTimeout(r,ms));
-
 }
 
 async function showIntro(){
@@ -109,42 +72,37 @@ async function showIntro(){
 for(const txt of introTexts){
 
 typingText.innerHTML="";
-
-typingText.style.opacity=1;
+typingText.style.opacity="1";
 
 for(let i=0;i<txt.length;i++){
-
 typingText.innerHTML+=txt[i];
-
 await wait(45);
-
 }
 
 await wait(1700);
 
-typingText.style.opacity=0;
+typingText.style.opacity="0";
 
 await wait(700);
 
 }
 
 intro.style.display="none";
-
 passwordPage.style.display="flex";
 
 }
 
 showIntro();
 
-const texture=new THREE.TextureLoader().load(
+const texture = new THREE.TextureLoader().load(
 "https://threejs.org/examples/textures/sprites/disc.png"
 );
 
-const galaxyGeometry=new THREE.BufferGeometry();
+const galaxyGeometry = new THREE.BufferGeometry();
 
-const galaxyVertices=[];
+const galaxyVertices = [];
 
-for(let i=0;i<5000;i++){
+for(let i=0;i<6000;i++){
 
 galaxyVertices.push(
 
@@ -172,7 +130,7 @@ galaxyVertices,
 
 );
 
-const galaxyMaterial=new THREE.PointsMaterial({
+const galaxyMaterial = new THREE.PointsMaterial({
 
 size:2,
 
@@ -188,7 +146,7 @@ blending:THREE.AdditiveBlending
 
 });
 
-const galaxy=new THREE.Points(
+const galaxy = new THREE.Points(
 
 galaxyGeometry,
 
@@ -198,88 +156,32 @@ galaxyMaterial
 
 scene.add(galaxy);
 
-const starGeometry=new THREE.SphereGeometry(
+const starGeometry = new THREE.SphereGeometry(
 
 1.5,
 
-18,
+20,
 
-18
+20
 
 );
 
 for(let i=0;i<100;i++){
 
-const starMaterial=new THREE.MeshBasicMaterial({
-
-color:0xffffff
-
-});
-
-const star=new THREE.Mesh(
+const star = new THREE.Mesh(
 
 starGeometry,
 
-starMaterial
-
-);
-
-const r=250+Math.random()*700;
-
-const theta=Math.random()*Math.PI*2;
-
-const phi=Math.random()*Math.PI;
-
-star.position.set(
-
-r*Math.sin(phi)*Math.cos(theta),
-
-r*Math.cos(phi),
-
-r*Math.sin(phi)*Math.sin(theta)
-
-);
-
-scene.add(star);
-
-stars.push(star);
-
-}
-
-const moon=new THREE.Mesh(
-
-new THREE.SphereGeometry(12,32,32),
-
 new THREE.MeshBasicMaterial({
 
-color:0x9dbdff
+color:0xffffff
 
 })
 
 );
 
-moon.position.set(
-
--220,
-
-80,
-
--420
-
-);
-
-scene.add(moon);
-
-const sun=new THREE.Mesh(
-
-new THREE.SphereGeometry(22,40,40),
-
-new THREE.MeshBasicMaterial({
-
-color:0xffd44d
-  
-
-enterBtn.onclick=()=>{
+const r = 250
+  enterBtn.onclick=()=>{
 
 const pass=password.value.trim();
 
@@ -305,7 +207,7 @@ bgMusic.play().catch(()=>{});
 
 }else{
 
-error.innerHTML="رمز اشتباهه 😝";
+error.innerHTML="رمز اشتباهه 💔";
 
 }
 
@@ -338,40 +240,7 @@ mode:"static",
 position:{
 
 left:"70px",
-
-bottom:"70px"
-
-},
-
-color:"white"
-
-});
-
-joystick.on("move",(evt,data)=>{
-
-moveX=data.vector.x;
-
-moveY=data.vector.y;
-
-});
-
-joystick.on("end",()=>{
-
-moveX=0;
-
-moveY=0;
-
-});
-
-let drag=false;
-
-let lastX=0;
-
-let lastY=0;
-
-window.addEventListener("pointerdown
-
-function updateCamera(dt){
+  function updateCamera(dt){
 
 if(!canMove)return;
 
@@ -393,15 +262,11 @@ function updateMessages(){
 
 let nearest=-1;
 
-let minDistance=20;
+let minDistance=18;
 
 for(let i=0;i<stars.length;i++){
 
-const d=camera.position.distanceTo(
-
-stars[i].position
-
-);
+const d=camera.position.distanceTo(stars[i].position);
 
 if(d<minDistance){
 
@@ -419,11 +284,9 @@ if(currentStar!==nearest){
 
 currentStar=nearest;
 
-messageText.innerHTML=
+messageText.innerHTML=messages[nearest];
 
-messages[nearest];
-
-messageBox.style.opacity=1;
+messageBox.style.opacity="1";
 
 }
 
@@ -431,50 +294,33 @@ messageBox.style.opacity=1;
 
 currentStar=-1;
 
-messageBox.style.opacity=0;
+messageBox.style.opacity="0";
 
 }
 
-const sunDistance=
-
-camera.position.distanceTo(
-
-sun.position
-
-);
+const sunDistance=camera.position.distanceTo(sun.position);
 
 if(sunDistance<45){
 
-messageBox.style.opacity=1;
+messageBox.style.opacity="1";
 
 messageText.innerHTML=`
 
-☀️❤️<br><br>
-
-تولدت مبارک خورشید زندگیم...
+☀️
 
 <br><br>
 
-امیدوارم همیشه بخندی...
-
-همیشه سالم باشی...
-
-همیشه خوشحال باشی...
+تولدت مبارک خورشید زندگیم ❤️
 
 <br><br>
 
-دوستت دارم تا ابد...
+آرزو میکنم همیشه
 
-<br><br>
+شاد باشی...
 
-🌙 یاسین
+سلامت باشی...
 
-`;
-
-}
-
-}
-
+و همیشه لبخند بزنی
 function animate(){
 
 requestAnimationFrame(animate);
@@ -499,9 +345,7 @@ const s=
 
 Math.sin(
 
-clock.elapsedTime*2+
-
-i
+clock.elapsedTime*2+i
 
 )*0.12;
 
