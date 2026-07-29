@@ -1,406 +1,268 @@
-import * as THREE from "three";
-import messages from "./messages.js";
+const player=document.getElementById("player");
 
-const canvas = document.getElementById("space");
+const leftBtn=document.getElementById("left");
+const rightBtn=document.getElementById("right");
+const jumpBtn=document.getElementById("jump");
 
-const intro = document.getElementById("intro");
-const typingText = document.getElementById("typingText");
+const heartsContainer=document.getElementById("hearts");
 
-const passwordPage = document.getElementById("passwordPage");
-const password = document.getElementById("password");
-const enterBtn = document.getElementById("enterBtn");
-const error = document.getElementById("error");
+const counter=document.getElementById("count");
 
-const loadingPage = document.getElementById("loadingPage");
-const gameUI = document.getElementById("gameUI");
+const stage=document.getElementById("stage");
 
-const messageBox = document.getElementById("messageBox");
-const messageText = document.getElementById("messageText");
+let playerX=80;
+let playerY=0;
 
-const overlay = document.getElementById("overlay");
+let velocityY=0;
 
-const bgMusic = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
+let jumping=false;
 
-const scene = new THREE.Scene();
+let direction=1;
 
-const camera = new THREE.PerspectiveCamera(
-75,
-window.innerWidth / window.innerHeight,
-0.1,
-5000
-);
+let collected=0;
 
-camera.position.set(0,0,0);
+let currentStage=1;
 
-const renderer = new THREE.WebGLRenderer({
-canvas,
-antialias:true
-});
+const hearts=[];
 
-renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+function createHeart(x,y,text){
 
-scene.add(new THREE.AmbientLight(0xffffff,2));
+const heart=document.createElement("img");
 
-const clock = new THREE.Clock();
+heart.src="assets/heart.png";
 
-let stars = [];
-let currentStar = -1;
+heart.className="heart";
 
-let moveX = 0;
-let moveY = 0;
+heart.style.left=x+"px";
 
-let yaw = 0;
-let pitch = 0;
+heart.style.top=y+"px";
 
-let canMove = false;
+heart.dataset.message=text;
 
-const introTexts = [
-"سلام جوجه کوچولوی من 🐥💕",
-"این سایتو فقط برای تو ساختم...",
-"شاید خیلی حرفه‌ای نباشه، ولی با عشق ساختمش...",
-"امیدوارم خوشت بیاد... ✨"
-];
+heartsContainer.appendChild(heart);
 
-function wait(ms){
-return new Promise(r=>setTimeout(r,ms));
-}
-
-async function showIntro(){
-
-for(const txt of introTexts){
-
-typingText.innerHTML="";
-typingText.style.opacity="1";
-
-for(let i=0;i<txt.length;i++){
-typingText.innerHTML+=txt[i];
-await wait(45);
-}
-
-await wait(1700);
-
-typingText.style.opacity="0";
-
-await wait(700);
+hearts.push(heart);
 
 }
 
-intro.style.display="none";
-passwordPage.style.display="flex";
+createHeart(300,300,"تو قشنگ‌ترین اتفاق زندگیمی ❤️");
+createHeart(520,250,"هر روز بیشتر دوستت دارم 🌸");
+createHeart(760,330,"لبخندت آرامش منه ✨");
+createHeart(980,240,"همیشه مراقب خودت باش ☀️");
+createHeart(1200,310,"کنارت خوشبختم 💕");
+createHeart(1450,280,"دلم فقط پیش توئه 🥹");
+createHeart(1700,250,"آرزوم دیدن خنده‌هاته 🌷");
+createHeart(1950,320,"بهت افتخار میکنم 🤍");
+createHeart(2200,270,"تا آخر دنیا دوستت دارم 🌍");
+createHeart(2450,300,"تولدت مبارک خورشید زندگیم ☀️❤️");
+function updatePlayer(){
+
+player.style.left=playerX+"px";
+
+player.style.bottom=(90+playerY)+"px";
+
+if(direction===-1){
+
+player.style.transform="scaleX(-1)";
+
+}else{
+
+player.style.transform="scaleX(1)";
 
 }
 
-showIntro();
+}
 
-const texture = new THREE.TextureLoader().load(
-"https://threejs.org/examples/textures/sprites/disc.png"
-);
+function jump(){
 
-const galaxyGeometry = new THREE.BufferGeometry();
+if(jumping)return;
 
-const galaxyVertices = [];
+jumping=true;
 
-for(let i=0;i<6000;i++){
-
-galaxyVertices.push(
-
-(Math.random()-0.5)*3000,
-
-(Math.random()-0.5)*3000,
-
-(Math.random()-0.5)*3000
-
-);
+velocityY=18;
 
 }
 
-galaxyGeometry.setAttribute(
+function physics(){
 
-"position",
+if(jumping){
 
-new THREE.Float32BufferAttribute(
+playerY+=velocityY;
 
-galaxyVertices,
+velocityY-=1;
 
-3
+if(playerY<=0){
 
-)
+playerY=0;
 
-);
+velocityY=0;
 
-const galaxyMaterial = new THREE.PointsMaterial({
+jumping=false;
 
-size:2,
+}
 
-map:texture,
+}
 
-transparent:true,
+}
 
-depthWrite:false,
+function moveLeft(){
 
-color:0xffffff,
+playerX-=8;
 
-blending:THREE.AdditiveBlending
+direction=-1;
+
+if(playerX<0){
+
+playerX=0;
+
+}
+
+}
+
+function moveRight(){
+
+playerX+=8;
+
+direction=1;
+
+if(playerX>2500){
+
+playerX=2500;
+
+}
+
+}
+
+leftBtn.addEventListener("touchstart",()=>{
+
+moveLeft();
 
 });
 
-const galaxy = new THREE.Points(
+rightBtn.addEventListener("touchstart",()=>{
 
-galaxyGeometry,
+moveRight();
 
-galaxyMaterial
+});
 
-);
+jumpBtn.addEventListener("click",jump);
 
-scene.add(galaxy);
+leftBtn.addEventListener("click",moveLeft);
 
-const starGeometry = new THREE.SphereGeometry(
+rightBtn.addEventListener("click",moveRight);
+function checkHearts(){
 
-1.5,
+hearts.forEach((heart)=>{
 
-20,
+if(heart.dataset.collected)return;
 
-20
+const hx=heart.offsetLeft;
 
-);
+const hy=heart.offsetTop;
 
-for(let i=0;i<100;i++){
+const px=playerX+45;
 
-const star = new THREE.Mesh(
+const py=(window.innerHeight-90-playerY);
 
-starGeometry,
+const dx=Math.abs(px-hx);
 
-new THREE.MeshBasicMaterial({
+const dy=Math.abs(py-hy);
 
-color:0xffffff
+if(dx<55&&dy<80){
 
-})
+heart.dataset.collected="1";
 
-);
+heart.style.display="none";
 
-const r = 250
-  enterBtn.onclick=()=>{
+collected++;
 
-const pass=password.value.trim();
+counter.textContent=collected;
 
-if(pass==="1130"||pass==="66"){
+showMessage(heart.dataset.message);
 
-passwordPage.style.display="none";
+if(collected===10){
 
-loadingPage.style.display="flex";
-
-setTimeout(()=>{
-
-loadingPage.style.display="none";
-
-gameUI.style.display="block";
-
-overlay.style.opacity=0;
-
-canMove=true;
-
-bgMusic.play().catch(()=>{});
-
-},2200);
-
-}else{
-
-error.innerHTML="رمز اشتباهه 💔";
-
-}
-
-};
-
-musicBtn.onclick=()=>{
-
-if(bgMusic.paused){
-
-bgMusic.play();
-
-musicBtn.innerHTML="🔊";
-
-}else{
-
-bgMusic.pause();
-
-musicBtn.innerHTML="🎵";
-
-}
-
-};
-
-const joystick=nipplejs.create({
-
-zone:document.getElementById("joystick"),
-
-mode:"static",
-
-position:{
-
-left:"70px",
-  function updateCamera(dt){
-
-if(!canMove)return;
-
-camera.rotation.order="YXZ";
-
-camera.rotation.y=yaw;
-
-camera.rotation.x=pitch;
-
-const speed=55*dt;
-
-camera.translateZ(-moveY*speed);
-
-camera.translateX(moveX*speed);
-
-}
-
-function updateMessages(){
-
-let nearest=-1;
-
-let minDistance=18;
-
-for(let i=0;i<stars.length;i++){
-
-const d=camera.position.distanceTo(stars[i].position);
-
-if(d<minDistance){
-
-minDistance=d;
-
-nearest=i;
+finishGame();
 
 }
 
 }
 
-if(nearest!==-1){
-
-if(currentStar!==nearest){
-
-currentStar=nearest;
-
-messageText.innerHTML=messages[nearest];
-
-messageBox.style.opacity="1";
+});
 
 }
 
-}else{
+function showMessage(text){
 
-currentStar=-1;
+const box=document.getElementById("messageBox");
 
-messageBox.style.opacity="0";
+const msg=document.getElementById("messageText");
+
+msg.innerHTML=text;
+
+box.classList.add("show");
+
+clearTimeout(box.timer);
+
+box.timer=setTimeout(()=>{
+
+box.classList.remove("show");
+
+},2500);
+
+}
+function finishGame(){
+
+const finish=document.getElementById("finishScreen");
+
+finish.style.display="flex";
+
+document.getElementById("game").style.pointerEvents="none";
 
 }
 
-const sunDistance=camera.position.distanceTo(sun.position);
+function loop(){
 
-if(sunDistance<45){
+physics();
 
-messageBox.style.opacity="1";
+updatePlayer();
 
-messageText.innerHTML=`
+checkHearts();
 
-☀️
-
-<br><br>
-
-تولدت مبارک خورشید زندگیم ❤️
-
-<br><br>
-
-آرزو میکنم همیشه
-
-شاد باشی...
-
-سلامت باشی...
-
-و همیشه لبخند بزنی
-function animate(){
-
-requestAnimationFrame(animate);
-
-const dt=clock.getDelta();
-
-updateCamera(dt);
-
-galaxy.rotation.y+=0.00015;
-
-galaxy.rotation.x+=0.00005;
-
-for(let i=0;i<stars.length;i++){
-
-stars[i].rotation.y+=0.01;
-
-stars[i].rotation.x+=0.005;
-
-const s=
-
-1+
-
-Math.sin(
-
-clock.elapsedTime*2+i
-
-)*0.12;
-
-stars[i].scale.set(
-
-s,
-
-s,
-
-s
-
-);
+requestAnimationFrame(loop);
 
 }
 
-moon.rotation.y+=0.002;
+updatePlayer();
 
-sun.rotation.y+=0.0015;
+loop();
 
-updateMessages();
+document.addEventListener("keydown",(e)=>{
 
-renderer.render(
+if(e.key==="ArrowLeft"){
 
-scene,
-
-camera
-
-);
+moveLeft();
 
 }
 
-animate();
+if(e.key==="ArrowRight"){
 
-window.addEventListener(
-
-"resize",
-
-()=>{
-
-camera.aspect=
-
-window.innerWidth/
-
-window.innerHeight;
-
-camera.updateProjectionMatrix();
-
-renderer.setSize(
-
-window.innerWidth,
-
-window.innerHeight
-
-);
+moveRight();
 
 }
 
-);
+if(e.key===" "||
+
+e.key==="ArrowUp"){
+
+jump();
+
+}
+
+});
+
+document.getElementById("restartBtn")?.addEventListener("click",()=>{
+
+location.reload();
+
+});
