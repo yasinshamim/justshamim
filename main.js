@@ -133,23 +133,16 @@ playerX=2500;
 
 }
 
-leftBtn.addEventListener("touchstart",()=>{
-
-moveLeft();
-
+leftBtn.addEventListener("touchstart", () => {
+    moveRight();
 });
 
-rightBtn.addEventListener("touchstart",()=>{
-
-moveRight();
-
+rightBtn.addEventListener("touchstart", () => {
+    moveLeft();
 });
 
-jumpBtn.addEventListener("click",jump);
-
-leftBtn.addEventListener("click",moveLeft);
-
-rightBtn.addEventListener("click",moveRight);
+leftBtn.addEventListener("click", moveRight);
+rightBtn.addEventListener("click", moveLeft);
 function checkHearts(){
 
 hearts.forEach((heart)=>{
