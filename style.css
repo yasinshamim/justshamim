@@ -1,431 +1,188 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Vazirmatn,sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Vazirmatn, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-html,body{
-
-width:100%;
-height:100%;
-overflow:hidden;
-background:#111;
-
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #111;
 }
 
-#game{
-
-position:relative;
-width:100%;
-height:100vh;
-overflow:hidden;
-
+#game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
-#world{
-position:absolute;
-inset:0;
-overflow:hidden;
+#world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3000px; /* عرض کل دنیای بازی */
+  height: 100vh;
+  will-change: transform;
 }
 
-#background{
-position:absolute;
-left:0;
-top:0;
-width:100%;
-height:100%;
-object-fit:cover;
-z-index:1;
+#background {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
 }
 
-#player{
-
-position:absolute;
-
-left:80px;
-bottom:90px;
-
-width:90px;
-
-user-select:none;
-pointer-events:none;
-
-transition:
-left .15s linear,
-bottom .15s linear;
-
-z-index:10;
-
+#player {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 75px;
+  user-select: none;
+  pointer-events: none;
+  z-index: 10;
+  /* ترانزیشن حذف شد تا جابه‌جایی دوربین و بازیکن کاملاً روان باشد */
 }
 
-#hud{
-
-position:absolute;
-
-top:20px;
-left:20px;
-right:20px;
-
-display:flex;
-
-justify-content:space-between;
-
-z-index:20;
-
+#hud {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 20;
+  pointer-events: none;
 }
 
-#stage{
-
-padding:10px 20px;
-
-background:rgba(0,0,0,.45);
-
-color:#fff;
-
-border-radius:30px;
-
-font-size:20px;
-
-backdrop-filter:blur(10px);
-
+#stage, #heartCounter {
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border-radius: 30px;
+  font-size: 20px;
+  backdrop-filter: blur(10px);
 }
 
-#heartCounter{
-
-padding:10px 20px;
-
-background:rgba(0,0,0,.45);
-
-color:white;
-
-border-radius:30px;
-
-font-size:22px;
-
-backdrop-filter:blur(10px);
-
-}
-#controls{
-
-position:absolute;
-
-left:50%;
-
-bottom:25px;
-
-transform:translateX(-50%);
-
-display:flex;
-
-gap:18px;
-
-z-index:30;
-
+#controls {
+  position: fixed;
+  left: 50%;
+  bottom: 25px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 18px;
+  z-index: 30;
 }
 
-#controls button{
-
-width:75px;
-
-height:75px;
-
-border:none;
-
-border-radius:50%;
-
-background:rgba(255,255,255,.18);
-
-backdrop-filter:blur(12px);
-
-font-size:32px;
-
-color:white;
-
-cursor:pointer;
-
-transition:.2s;
-
+#controls button {
+  width: 75px;
+  height: 75px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  font-size: 32px;
+  color: white;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
-#controls button:active{
-
-transform:scale(.9);
-
+#controls button:active {
+  transform: scale(0.9);
 }
 
-#hearts{
-
-position:absolute;
-
-inset:0;
-
+#platforms {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
 }
 
-.heart{
-
-position:absolute;
-
-width:60px;
-
-height:60px;
-  z-index:15;
-
-animation:float 1.5s infinite ease-in-out;
-
-cursor:pointer;
-
+.platform {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-@keyframes float{
-
-0%{
-
-transform:translateY(0);
-
+#hearts {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
 }
 
-50%{
-
-transform:translateY(-10px);
-
+.heart {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  animation: float 1.5s infinite ease-in-out;
 }
 
-100%{
-
-transform:translateY(0);
-
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
-}
-#messageBox{
-
-position:absolute;
-
-top:90px;
-
-left:50%;
-
-transform:translateX(-50%);
-
-min-width:320px;
-
-max-width:700px;
-
-padding:18px 24px;
-
-background:rgba(0,0,0,.55);
-
-color:white;
-
-border-radius:25px;
-
-backdrop-filter:blur(12px);
-
-font-size:20px;
-
-line-height:2;
-
-text-align:center;
-
-display:none;
-
-z-index:40;
-
+#messageBox {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  max-width: 90%;
+  padding: 14px 20px;
+  background: rgba(0, 0, 0, 0.65);
+  color: white;
+  border-radius: 25px;
+  backdrop-filter: blur(12px);
+  font-size: 18px;
+  text-align: center;
+  display: none;
+  z-index: 40;
 }
 
-#messageBox.show{
-
-display:block;
-
-animation:popup .35s ease;
-
+#messageBox.show {
+  display: block;
+  animation: popup 0.35s ease;
 }
 
-@keyframes popup{
-
-0%{
-
-opacity:0;
-
-transform:translateX(-50%) scale(.8);
-
+@keyframes popup {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  100% { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
-100%{
-
-opacity:1;
-
-transform:translateX(-50%) scale(1);
-
+#finishScreen {
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(180deg, #ffb347, #ff6b6b);
+  color: white;
+  z-index: 100;
+  text-align: center;
+  padding: 30px;
 }
 
-}
-
-.fadeOut{
-
-animation:fadeOut .5s forwards;
-
-}
-
-@keyframes fadeOut{
-
-to{
-
-opacity:0;
-
-}
-
-}
-#finishScreen{
-
-position:absolute;
-
-inset:0;
-
-display:none;
-
-justify-content:center;
-
-align-items:center;
-
-flex-direction:column;
-
-background:linear-gradient(
-
-180deg,
-
-#ffb347,
-
-#ff6b6b
-
-);
-
-color:white;
-
-z-index:100;
-
-text-align:center;
-
-padding:30px;
-
-}
-
-#finishScreen h1{
-
-font-size:55px;
-
-margin-bottom:25px;
-
-}
-
-#finishScreen p{
-
-font-size:26px;
-
-line-height:2;
-
-max-width:850px;
-
-}
-
-#restartBtn{
-
-margin-top:40px;
-
-padding:16px 45px;
-
-font-size:24px;
-
-border:none;
-
-border-radius:40px;
-
-background:white;
-
-color:#ff4d6d;
-
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-#restartBtn:hover{
-
-transform:scale(1.05);
-
-}
-@media (max-width:768px){
-
-#player{
-
-width:70px;
-
-}
-
-.heart{
-
-width:50px;
-
-height:50px;
-
-}
-
-#controls{
-
-gap:12px;
-
-bottom:20px;
-
-}
-
-#controls button{
-
-width:65px;
-
-height:65px;
-
-font-size:28px;
-
-}
-
-#stage,
-
-#heartCounter{
-
-font-size:18px;
-
-padding:8px 16px;
-
-}
-
-#messageBox{
-
-width:90%;
-
-font-size:18px;
-
-}
-
-#finishScreen h1{
-
-font-size:38px;
-
-}
-
-#finishScreen p{
-
-font-size:20px;
-
-}
-
-#restartBtn{
-
-font-size:20px;
-
-padding:14px 32px;
-
-}
-
+#finishScreen h1 { font-size: 40px; margin-bottom: 20px; }
+#finishScreen p { font-size: 20px; line-height: 1.8; max-width: 600px; }
+
+#restartBtn {
+  margin-top: 30px;
+  padding: 14px 35px;
+  font-size: 20px;
+  border: none;
+  border-radius: 40px;
+  background: white;
+  color: #ff4d6d;
+  cursor: pointer;
 }
