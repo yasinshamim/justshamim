@@ -26,7 +26,7 @@ html, body {
   background: #111;
 }
 
-/* تنظیم پس‌زمینه افقی با تناسب کامل ارتفاع و عرض */
+/* ۱. کشیده شدن کامل عکس به اندازه ۳۰۰۰ پیکسل (بدون تکرار و کات) */
 #world {
   position: absolute;
   top: 0;
@@ -35,9 +35,9 @@ html, body {
   height: 100vh;
   pointer-events: none;
   background-image: url('assets/bg2.png');
-  background-size: auto 100%;
+  background-size: 3000px 100vh; /* دقیقا ۳۰۰۰ پیکسل عرض و ۱۰۰٪ ارتفاع */
   background-position: left bottom;
-  background-repeat: repeat-x;
+  background-repeat: no-repeat; /* عدم تکرار عکس */
 }
 
 #player {
@@ -68,26 +68,41 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
+/* ۲. تنظیم جدید دکمه‌ها: تفکیک به چپ و راست صفحه */
 #controls {
   position: fixed;
-  left: 50%;
-  bottom: 25px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 20px;
+  inset: 0;
+  pointer-events: none; /* برای اینکه وسط صفحه کلیک‌پذیر بمونه */
   z-index: 99999 !important;
+}
+
+/* دکمه‌های حرکت (گوشه پایین چپ) */
+.move-btns {
+  position: absolute;
+  left: 20px;
+  bottom: 25px;
+  display: flex;
+  gap: 15px;
   pointer-events: auto;
   direction: ltr;
 }
 
+/* دکمه پرش (گوشه پایین راست) */
+.jump-btn {
+  position: absolute;
+  right: 20px;
+  bottom: 25px;
+  pointer-events: auto;
+}
+
 #controls button {
-  width: 75px;
-  height: 75px;
+  width: 70px;
+  height: 70px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
-  font-size: 32px;
+  font-size: 30px;
   color: white;
   cursor: pointer;
   touch-action: manipulation;
