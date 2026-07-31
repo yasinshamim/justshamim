@@ -1,267 +1,259 @@
-const player=document.getElementById("player");
+const player = document.getElementById("player");
+const world = document.getElementById("world");
+const platformsContainer = document.getElementById("platforms");
+const heartsContainer = document.getElementById("hearts");
+const counter = document.getElementById("count");
+const stage = document.getElementById("stage");
+const bgMusic = document.getElementById("bgMusic");
 
-const leftBtn=document.getElementById("left");
-const rightBtn=document.getElementById("right");
-const jumpBtn=document.getElementById("jump");
+const leftBtn = document.getElementById("left");
+const rightBtn = document.getElementById("right");
+const jumpBtn = document.getElementById("jump");
 
-const heartsContainer=document.getElementById("hearts");
+// Auto Play Music on first user interaction
+const playAudio = () => {
+  if (bgMusic) bgMusic.play().catch(() => {});
+  document.removeEventListener("touchstart", playAudio);
+  document.removeEventListener("click", playAudio);
+};
+document.addEventListener("touchstart", playAudio);
+document.addEventListener("click", playAudio);
 
-const counter=document.getElementById("count");
+// World & Camera Parameters
+const worldWidth = 3000;
+let cameraX = 0;
 
-const stage=document.getElementById("stage");
+// Player State
+let playerX = 100;
+let playerY = 0; // Relative to ground (bottom = 90px)
+let velocityY = 0;
+let isGrounded = true;
+let direction = 1;
+let collected = 0;
+let currentStage = 1;
 
-let playerX=80;
-let playerY=0;
+const groundHeight = 90;
+const playerWidth = 60;
+const playerHeight = 70;
 
-let velocityY=0;
+// Control States
+let moveLeftHeld = false;
+let moveRightHeld = false;
 
-let jumping=false;
+// Stage Messages (10 Messages per stage)
+const stageMessages = [
+  "تو قشنگ‌ترین اتفاق زندگیمی ❤️",
+  "هر روز بیشتر دوستت دارم 🌸",
+  "لبخندت آرامش منه ✨",
+  "همیشه مراقب خودت باش ☀️",
+  "کنارت خوشبختم 💕",
+  "دلم فقط پیش توئه 🥹",
+  "آرزوم دیدن خنده‌هاته 🌷",
+  "بهت افتخار میکنم 🤍",
+  "تا آخر دنیا دوستت دارم 🌍",
+  "تولدت مبارک خورشید زندگیم ☀️❤️"
+];
 
-let direction=1;
+let platforms = [];
+let hearts = [];
 
-let collected=0;
+// Generate Platforms & Hearts for current Stage
+function loadStage(stageNum) {
+  platformsContainer.innerHTML = "";
+  heartsContainer.innerHTML = "";
+  platforms = [];
+  hearts = [];
+  collected = 0;
+  counter.textContent = "0";
+  stage.textContent = `مرحله ${stageNum}`;
 
-let currentStage=1;
+  // Base Ground Platform
+  platforms.push({ x: 0, y: 0, width: worldWidth, height: groundHeight });
 
-const hearts=[];
+  // Generate 8-10 Procedural Floating Platforms based on Stage
+  for (let i = 0; i < 9; i++) {
+    const platX = 250 + i * 290;
+    const platY = groundHeight + 80 + ((i + stageNum) % 3) * 60;
+    const platWidth = 140;
+    const platHeight = 20;
 
-function createHeart(x,y,text){
+    platforms.push({ x: platX, y: platY, width: platWidth, height: platHeight });
 
-const heart=document.createElement("img");
+    // Render Platform DOM
+    const platDiv = document.createElement("div");
+    platDiv.className = "platform";
+    platDiv.style.left = platX + "px";
+    platDiv.style.bottom = platY + "px";
+    platDiv.style.width = platWidth + "px";
+    platDiv.style.height = platHeight + "px";
+    platformsContainer.appendChild(platDiv);
 
-heart.src="assets/heart.png";
+    // Add Heart on Platform
+    const heartX = platX + platWidth / 2 - 25;
+    const heartY = platY + 30;
+    createHeartDOM(heartX, heartY, stageMessages[i] || "دوستت دارم ❤️");
+  }
 
-heart.className="heart";
+  // 10th Heart near the end of the map
+  createHeartDOM(2800, groundHeight + 100, stageMessages[9]);
 
-heart.style.left=x+"px";
-
-heart.style.top=y+"px";
-
-heart.dataset.message=text;
-
-heartsContainer.appendChild(heart);
-
-hearts.push(heart);
-
+  // Reset Player Position
+  playerX = 80;
+  playerY = 0;
+  velocityY = 0;
 }
 
-createHeart(300,300,"تو قشنگ‌ترین اتفاق زندگیمی ❤️");
-createHeart(520,250,"هر روز بیشتر دوستت دارم 🌸");
-createHeart(760,330,"لبخندت آرامش منه ✨");
-createHeart(980,240,"همیشه مراقب خودت باش ☀️");
-createHeart(1200,310,"کنارت خوشبختم 💕");
-createHeart(1450,280,"دلم فقط پیش توئه 🥹");
-createHeart(1700,250,"آرزوم دیدن خنده‌هاته 🌷");
-createHeart(1950,320,"بهت افتخار میکنم 🤍");
-createHeart(2200,270,"تا آخر دنیا دوستت دارم 🌍");
-createHeart(2450,300,"تولدت مبارک خورشید زندگیم ☀️❤️");
-function updatePlayer(){
+function createHeartDOM(x, y, message) {
+  const heartImg = document.createElement("img");
+  heartImg.src = "assets/heart.png";
+  heartImg.className = "heart";
+  heartImg.style.left = x + "px";
+  heartImg.style.bottom = y + "px";
 
-player.style.left=playerX+"px";
-
-player.style.bottom=(90+playerY)+"px";
-
-if(direction===-1){
-
-player.style.transform="scaleX(-1)";
-
-}else{
-
-player.style.transform="scaleX(1)";
-
+  const heartObj = { element: heartImg, x, y, collected: false, message };
+  hearts.push(heartObj);
+  heartsContainer.appendChild(heartImg);
 }
 
-}
+// Touch Controls (Fixed & Smooth Hold)
+const bindControl = (btn, onPress, onRelease) => {
+  btn.addEventListener("touchstart", (e) => { e.preventDefault(); onPress(); });
+  btn.addEventListener("touchend", (e) => { e.preventDefault(); onRelease(); });
+  btn.addEventListener("mousedown", onPress);
+  btn.addEventListener("mouseup", onRelease);
+};
 
-function jump(){
+bindControl(leftBtn, () => moveLeftHeld = true, () => moveLeftHeld = false);
+bindControl(rightBtn, () => moveRightHeld = true, () => moveRightHeld = false);
 
-if(jumping)return;
-
-jumping=true;
-
-velocityY=18;
-
-}
-
-function physics(){
-
-if(jumping){
-
-playerY+=velocityY;
-
-velocityY-=1;
-
-if(playerY<=0){
-
-playerY=0;
-
-velocityY=0;
-
-jumping=false;
-
-}
-
-}
-
-}
-
-function moveLeft(){
-
-playerX-=8;
-
-direction=-1;
-
-if(playerX<0){
-
-playerX=0;
-
-}
-
-}
-
-function moveRight(){
-
-playerX+=8;
-
-direction=1;
-
-if(playerX>2500){
-
-playerX=2500;
-
-}
-
-}
-
-leftBtn.addEventListener("touchstart", () => {
-    moveRight();
-});
-
-rightBtn.addEventListener("touchstart", () => {
-    moveLeft();
-});
-
-leftBtn.addEventListener("click", moveRight);
-rightBtn.addEventListener("click", moveLeft);
-jumpBtn.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    jump();
-});
-
+jumpBtn.addEventListener("touchstart", (e) => { e.preventDefault(); jump(); });
 jumpBtn.addEventListener("click", jump);
-function checkHearts(){
 
-hearts.forEach((heart)=>{
-
-if(heart.dataset.collected)return;
-
-const hx=heart.offsetLeft;
-
-const hy=heart.offsetTop;
-
-const px=playerX+45;
-
-const py=(window.innerHeight-90-playerY);
-
-const dx=Math.abs(px-hx);
-
-const dy=Math.abs(py-hy);
-
-if(dx<55&&dy<80){
-
-heart.dataset.collected="1";
-
-heart.style.display="none";
-
-collected++;
-
-counter.textContent=collected;
-
-showMessage(heart.dataset.message);
-
-if(collected===10){
-
-finishGame();
-
-}
-
-}
-
+window.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft" || e.key === "a") moveLeftHeld = true;
+  if (e.key === "ArrowRight" || e.key === "d") moveRightHeld = true;
+  if (e.key === " " || e.key === "ArrowUp" || e.key === "w") jump();
 });
 
+window.addEventListener("keyup", (e) => {
+  if (e.key === "ArrowLeft" || e.key === "a") moveLeftHeld = false;
+  if (e.key === "ArrowRight" || e.key === "d") moveRightHeld = false;
+});
+
+function jump() {
+  if (isGrounded) {
+    velocityY = 15;
+    isGrounded = false;
+  }
 }
 
-function showMessage(text){
+function updatePhysics() {
+  // Horizontal Movement
+  if (moveLeftHeld) {
+    playerX -= 7;
+    direction = -1;
+  }
+  if (moveRightHeld) {
+    playerX += 7;
+    direction = 1;
+  }
 
-const box=document.getElementById("messageBox");
+  // World Boundaries
+  if (playerX < 0) playerX = 0;
+  if (playerX > worldWidth - playerWidth) playerX = worldWidth - playerWidth;
 
-const msg=document.getElementById("messageText");
+  // Gravity
+  playerY += velocityY;
+  velocityY -= 0.8;
 
-msg.innerHTML=text;
+  // Platform & Ground Collision
+  isGrounded = false;
+  platforms.forEach(plat => {
+    // Check top edge collision of platform
+    if (
+      playerX + playerWidth > plat.x &&
+      playerX < plat.x + plat.width &&
+      playerY >= plat.y + plat.height - groundHeight - 15 &&
+      playerY <= plat.y + plat.height - groundHeight + 5 &&
+      velocityY <= 0
+    ) {
+      playerY = plat.y + plat.height - groundHeight;
+      velocityY = 0;
+      isGrounded = true;
+    }
+  });
 
-box.classList.add("show");
+  // Camera Follow logic (Center camera on player)
+  const screenWidth = window.innerWidth;
+  cameraX = playerX - screenWidth / 2 + playerWidth / 2;
+  if (cameraX < 0) cameraX = 0;
+  if (cameraX > worldWidth - screenWidth) cameraX = worldWidth - screenWidth;
 
-clearTimeout(box.timer);
-
-box.timer=setTimeout(()=>{
-
-box.classList.remove("show");
-
-},2500);
-
+  world.style.transform = `translateX(${-cameraX}px)`;
 }
-function finishGame(){
 
-const finish=document.getElementById("finishScreen");
-
-finish.style.display="flex";
-
-document.getElementById("game").style.pointerEvents="none";
-
+function updateDOM() {
+  player.style.left = playerX + "px";
+  player.style.bottom = (groundHeight + playerY) + "px";
+  player.style.transform = direction === -1 ? "scaleX(-1)" : "scaleX(1)";
 }
 
-function loop(){
+function checkHearts() {
+  hearts.forEach(heart => {
+    if (heart.collected) return;
 
-physics();
+    const dx = Math.abs((playerX + playerWidth / 2) - (heart.x + 25));
+    const dy = Math.abs((groundHeight + playerY + playerHeight / 2) - (heart.y + 25));
 
-updatePlayer();
+    if (dx < 45 && dy < 50) {
+      heart.collected = true;
+      heart.element.style.display = "none";
+      collected++;
+      counter.textContent = collected;
+      showMessage(heart.message);
 
-checkHearts();
-
-requestAnimationFrame(loop);
-
+      if (collected >= 10) {
+        setTimeout(nextStage, 1000);
+      }
+    }
+  });
 }
 
-updatePlayer();
+function showMessage(text) {
+  const box = document.getElementById("messageBox");
+  const msg = document.getElementById("messageText");
+  msg.innerHTML = text;
+  box.classList.add("show");
+  clearTimeout(box.timer);
+  box.timer = setTimeout(() => box.classList.remove("show"), 2500);
+}
 
+function nextStage() {
+  currentStage++;
+  if (currentStage > 10) {
+    finishGame();
+  } else {
+    loadStage(currentStage);
+  }
+}
+
+function finishGame() {
+  document.getElementById("finishScreen").style.display = "flex";
+  document.getElementById("game").style.pointerEvents = "none";
+}
+
+document.getElementById("restartBtn")?.addEventListener("click", () => {
+  location.reload();
+});
+
+// Game Loop
+function loop() {
+  updatePhysics();
+  updateDOM();
+  checkHearts();
+  requestAnimationFrame(loop);
+}
+
+// Start Game
+loadStage(1);
 loop();
-
-document.addEventListener("keydown",(e)=>{
-
-if(e.key==="ArrowLeft"){
-
-moveLeft();
-
-}
-
-if(e.key==="ArrowRight"){
-
-moveRight();
-
-}
-
-if(e.key===" "||
-
-e.key==="ArrowUp"){
-
-jump();
-
-}
-
-});
-
-document.getElementById("restartBtn")?.addEventListener("click",()=>{
-
-location.reload();
-
-});
