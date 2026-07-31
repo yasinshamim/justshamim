@@ -14,8 +14,50 @@ html, body {
   background: #111;
 }
 
-#global-bg {
-  display: none !important;
+/* پیغام اجبار به افقی کردن گوشی */
+#rotate-overlay {
+  position: fixed;
+  inset: 0;
+  background: #111;
+  color: white;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  z-index: 999999;
+  padding: 20px;
+}
+
+.rotate-content .phone-icon {
+  font-size: 60px;
+  animation: rotatePhone 2s infinite ease-in-out;
+  margin-bottom: 15px;
+}
+
+@keyframes rotatePhone {
+  0%, 10% { transform: rotate(0deg); }
+  40%, 60% { transform: rotate(-90deg); }
+  90%, 100% { transform: rotate(0deg); }
+}
+
+.rotate-content h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #ff4d6d;
+}
+
+.rotate-content p {
+  font-size: 15px;
+  color: #ccc;
+  max-width: 300px;
+  line-height: 1.6;
+}
+
+/* نمایش پیغام چرخش فقط موقعی که گوشی عمودی است */
+@media (orientation: portrait) {
+  #rotate-overlay {
+    display: flex;
+  }
 }
 
 #game {
@@ -26,7 +68,7 @@ html, body {
   background: #111;
 }
 
-/* دنیای بازی و پس‌زمینه یکپارچه (بدون زوم و بدون برش) */
+/* دنیای بازی و پس‌زمینه کشیده و متناسب در حالت افقی */
 #world {
   position: absolute;
   top: 0;
@@ -34,7 +76,7 @@ html, body {
   width: 3000px;
   height: 100vh;
   pointer-events: none;
-  background-image: url('assets/bg2.png');
+  background-image: url('assets/bg1.png');
   background-size: 3000px 100%;
   background-position: left bottom;
   background-repeat: no-repeat;
@@ -44,13 +86,13 @@ html, body {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 75px;
+  width: 65px;
   z-index: 10;
 }
 
 #hud {
   position: fixed;
-  top: 20px;
+  top: 15px;
   left: 20px;
   right: 20px;
   display: flex;
@@ -60,49 +102,47 @@ html, body {
 }
 
 #stage, #heartCounter {
-  padding: 10px 20px;
-  background: rgba(0, 0, 0, 0.45);
+  padding: 8px 18px;
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   border-radius: 30px;
-  font-size: 20px;
+  font-size: 16px;
   backdrop-filter: blur(10px);
 }
 
-/* تنظیم دکمه‌ها در دو گوشه چپ و راست */
+/* کنترل‌های بازی مخصوص حالت افقی */
 #controls {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 99999 !important;
+  z-index: 9999;
 }
 
-/* دکمه‌های حرکت چپ و راست (گوشه پایین سمت چپ) */
 .move-btns {
   position: absolute;
-  left: 20px;
-  bottom: 25px;
+  left: 25px;
+  bottom: 20px;
   display: flex;
   gap: 15px;
   pointer-events: auto;
   direction: ltr;
 }
 
-/* دکمه پرش (گوشه پایین سمت راست) */
 .jump-btn {
   position: absolute;
-  right: 20px;
-  bottom: 25px;
+  right: 25px;
+  bottom: 20px;
   pointer-events: auto;
 }
 
 #controls button {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
-  font-size: 30px;
+  font-size: 26px;
   color: white;
   cursor: pointer;
   touch-action: manipulation;
@@ -110,7 +150,7 @@ html, body {
 }
 
 #controls button:active {
-  transform: scale(0.85);
+  transform: scale(0.88);
   background: rgba(255, 255, 255, 0.6);
 }
 
@@ -122,11 +162,10 @@ html, body {
 
 .platform {
   position: absolute;
-  background: rgba(255, 255, 255, 0.4);
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 10px;
   backdrop-filter: blur(5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 #hearts {
@@ -137,29 +176,29 @@ html, body {
 
 .heart {
   position: absolute;
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   animation: float 1.5s infinite ease-in-out;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
 #messageBox {
   position: fixed;
-  top: 80px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
   min-width: 280px;
-  max-width: 90%;
-  padding: 14px 20px;
-  background: rgba(0, 0, 0, 0.75);
+  max-width: 80%;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.8);
   color: white;
   border-radius: 25px;
   backdrop-filter: blur(12px);
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   display: none;
   z-index: 100;
@@ -167,11 +206,11 @@ html, body {
 
 #messageBox.show {
   display: block;
-  animation: popup 0.35s ease;
+  animation: popup 0.3s ease;
 }
 
 @keyframes popup {
-  0% { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  0% { opacity: 0; transform: translateX(-50%) scale(0.85); }
   100% { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
@@ -186,16 +225,16 @@ html, body {
   color: white;
   z-index: 10000;
   text-align: center;
-  padding: 30px;
+  padding: 20px;
 }
 
-#finishScreen h1 { font-size: 38px; margin-bottom: 20px; }
-#finishScreen p { font-size: 20px; line-height: 1.8; max-width: 600px; }
+#finishScreen h1 { font-size: 32px; margin-bottom: 15px; }
+#finishScreen p { font-size: 18px; line-height: 1.6; max-width: 500px; }
 
 #restartBtn {
-  margin-top: 30px;
-  padding: 14px 35px;
-  font-size: 20px;
+  margin-top: 20px;
+  padding: 12px 30px;
+  font-size: 18px;
   border: none;
   border-radius: 40px;
   background: white;
