@@ -38,7 +38,7 @@ const playerHeight = 70;
 let moveLeftHeld = false;
 let moveRightHeld = false;
 
-// 100 Unique Messages for 10 Levels (10 messages each)
+// 100 Unique Messages for 10 Levels
 const allStageMessages = [
   // Stage 1
   [
@@ -172,20 +172,6 @@ const allStageMessages = [
   ]
 ];
 
-// List of Backgrounds for Stages (Add bg1.png, bg2.png, bg3.png in assets if you have them)
-const stageBackgrounds = [
-  "assets/bg2.png",
-  "assets/bg2.png", // می‌تونی نام عکس‌های مختلف بذاری
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png",
-  "assets/bg2.png"
-];
-
 let platforms = [];
 let hearts = [];
 
@@ -196,12 +182,7 @@ function loadStage(stageNum) {
   hearts = [];
   collected = 0;
   counter.textContent = "0";
-  stage.textContent = مرحله ${stageNum};
-
-  // Update Background Image
-  if (stageBackgrounds[stageNum - 1]) {
-    globalBg.src = stageBackgrounds[stageNum - 1];
-  }
+  stage.textContent = `مرحله ${stageNum}`;
 
   // Base Ground
   platforms.push({ x: 0, y: 0, width: worldWidth, height: groundHeight });
@@ -253,6 +234,7 @@ function createHeartDOM(x, y, message) {
 
 // Correct Control Mapping
 const bindControl = (btn, onPress, onRelease) => {
+  if (!btn) return;
   btn.addEventListener("touchstart", (e) => { e.preventDefault(); onPress(); });
   btn.addEventListener("touchend", (e) => { e.preventDefault(); onRelease(); });
   btn.addEventListener("mousedown", onPress);
@@ -263,13 +245,15 @@ const bindControl = (btn, onPress, onRelease) => {
 bindControl(leftBtn, () => moveLeftHeld = true, () => moveLeftHeld = false);
 bindControl(rightBtn, () => moveRightHeld = true, () => moveRightHeld = false);
 
-jumpBtn.addEventListener("touchstart", (e) => { e.preventDefault(); jump(); });
-jumpBtn.addEventListener("click", jump);
+if (jumpBtn) {
+  jumpBtn.addEventListener("touchstart", (e) => { e.preventDefault(); jump(); });
+  jumpBtn.addEventListener("click", jump);
+}
 
 window.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft" || e.key === "a") moveLeftHeld = true;
   if (e.key === "ArrowRight" || e.key === "d") moveRightHeld = true;
-  if (e.key === " "  e.key === "ArrowUp"  e.key === "w") jump();
+  if (e.key === " " || e.key === "ArrowUp" || e.key === "w") jump();
 });
 window.addEventListener("keyup", (e) => {
   if (e.key === "ArrowLeft" || e.key === "a") moveLeftHeld = false;
@@ -319,7 +303,7 @@ function updatePhysics() {
   if (cameraX < 0) cameraX = 0;
   if (cameraX > worldWidth - screenWidth) cameraX = worldWidth - screenWidth;
 
-  world.style.transform = translateX(${-cameraX}px);
+  world.style.transform = `translateX(${-cameraX}px)`;
 }
 
 function updateDOM() {
