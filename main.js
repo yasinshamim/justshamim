@@ -143,6 +143,12 @@ rightBtn.addEventListener("touchstart", () => {
 
 leftBtn.addEventListener("click", moveRight);
 rightBtn.addEventListener("click", moveLeft);
+jumpBtn.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    jump();
+});
+
+jumpBtn.addEventListener("click", jump);
 function checkHearts(){
 
 hearts.forEach((heart)=>{
