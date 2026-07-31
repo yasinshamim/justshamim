@@ -2,56 +2,53 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>سفر عشق ❤️</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>شمیم من 💖</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
 </head>
 <body>
 
-<img id="global-bg" src="assets/bg2.png" draggable="false">
-
-<div id="game">
-  <div id="hud">
-    <div id="stage">مرحله ۱</div>
-    <div id="heartCounter">❤️ <span id="count">0</span>/10</div>
-  </div>
-
-  <div id="world">
-    <div id="platforms"></div>
-    <div id="hearts"></div>
-    <img id="player" src="assets/file_00000000b874820a9622b5b64da01022.png" draggable="false">
-  </div>
-
-  <div id="controls">
-    <div class="move-btns">
-      <button id="left">➡️</button>
-      <button id="right">⬅️</button>
-    </div>
-    <div class="jump-btn">
-      <button id="jump">⬆️</button>
+  <div id="rotate-overlay">
+    <div class="rotate-content">
+      <div class="phone-icon">📱</div>
+      <h2>لطفاً گوشی خود را افقی کنید</h2>
+      <p>برای تجربه بهتر بازی، چرخش خودکار گوشی را روشن کرده و آن را افقی نگه دارید 🔄</p>
     </div>
   </div>
-</div>
 
-<div id="messageBox">
-  <div id="messageText"></div>
-</div>
+  <div id="game">
+    <div id="world">
+      <div id="platforms"></div>
+      <div id="hearts"></div>
+      <img id="player" src="assets/file_00000000b874820a9629fba9e.png" alt="Player">
+    </div>
 
-<div id="finishScreen">
-  <h1>🎉 تولدت مبارک مامیییی ❤️</h1>
-  <p>
-    تو واقعا بهترین اتفاق زندگیمی...<br><br>
-    امیدوارم همیشه بخندی...<br>
-    همیشه سالم باشی...<br>
-    همیشه خوشحال باشی...<br><br>
-    من همیشههه کنارت می‌مونم...<br><br>
-      خیلیییی دوست دارم تا ابد عاشقتممم  🌙❤️☀️
-  </p>
-  <button id="restartBtn">دوباره بازی کن</button>
-</div>
+    <div id="hud">
+      <div id="heartCounter">💖 <span id="count">0</span>/10</div>
+      <div id="stage">مرحله ۱</div>
+    </div>
 
-<audio id="bgMusic" loop src="assets/music.mp3"></audio>
+    <div id="controls">
+      <div class="move-btns">
+        <button id="right">➔</button>
+        <button id="left">⬅</button>
+      </div>
+      <button id="jump" class="jump-btn">⬆</button>
+    </div>
 
-<script src="main.js"></script>
+    <div id="messageBox">
+      <p id="messageText"></p>
+    </div>
+
+    <div id="finishScreen">
+      <h1>تولدت مبارک عشقم! 🎉💖</h1>
+      <p>تو قشنگ‌ترین اتفاق زندگی منی... مرسی که تا آخر بازی همراهم بودی 🥰</p>
+      <button id="restartBtn">شروع مجدد 🔄</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" src="assets/music.mp3" loop></audio>
+  <script src="main.js"></script>
 </body>
 </html>
