@@ -14,15 +14,9 @@ html, body {
   background: #111;
 }
 
-/* Background Issue Fix */
+/* خاموش کردن تصویر ثابت پس‌زمینه */
 #global-bg {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: 1;
-  transition: opacity 0.5s ease;
+  display: none !important;
 }
 
 #game {
@@ -30,16 +24,21 @@ html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  z-index: 2;
+  background: #111;
 }
 
+/* قرار دادن عکس افقی جدید متصل به دنیای بازی */
 #world {
   position: absolute;
   top: 0;
   left: 0;
   width: 3000px;
   height: 100vh;
-  will-change: transform;
+  pointer-events: none;
+  background-image: url('assets/bg2.png');
+  background-size: cover;
+  background-position: left bottom;
+  background-repeat: repeat-x;
 }
 
 #player {
@@ -47,8 +46,6 @@ html, body {
   left: 0;
   bottom: 0;
   width: 75px;
-  user-select: none;
-  pointer-events: none;
   z-index: 10;
 }
 
@@ -59,7 +56,7 @@ html, body {
   right: 20px;
   display: flex;
   justify-content: space-between;
-  z-index: 20;
+  z-index: 50;
   pointer-events: none;
 }
 
@@ -72,6 +69,7 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
+/* تنظیمات دکمه‌های لمسی فوق‌العاده روان و دقیق */
 #controls {
   position: fixed;
   left: 50%;
@@ -79,8 +77,9 @@ html, body {
   transform: translateX(-50%);
   display: flex;
   gap: 20px;
-  z-index: 30;
-  direction: ltr; /* Fix Button Swap */
+  z-index: 9999 !important;
+  pointer-events: auto;
+  direction: ltr;
 }
 
 #controls button {
@@ -88,16 +87,18 @@ html, body {
   height: 75px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(12px);
   font-size: 32px;
   color: white;
   cursor: pointer;
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #controls button:active {
-  transform: scale(0.9);
+  transform: scale(0.85);
+  background: rgba(255, 255, 255, 0.6);
 }
 
 #platforms {
@@ -108,11 +109,11 @@ html, body {
 
 .platform {
   position: absolute;
-  background: rgba(255, 255, 255, 0.35);
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.8);
   border-radius: 12px;
   backdrop-filter: blur(5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 #hearts {
@@ -141,14 +142,14 @@ html, body {
   min-width: 280px;
   max-width: 90%;
   padding: 14px 20px;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
   border-radius: 25px;
   backdrop-filter: blur(12px);
   font-size: 18px;
   text-align: center;
   display: none;
-  z-index: 40;
+  z-index: 100;
 }
 
 #messageBox.show {
@@ -170,7 +171,7 @@ html, body {
   flex-direction: column;
   background: linear-gradient(180deg, #ffb347, #ff6b6b);
   color: white;
-  z-index: 100;
+  z-index: 10000;
   text-align: center;
   padding: 30px;
 }
