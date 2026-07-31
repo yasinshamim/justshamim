@@ -26,7 +26,7 @@ html, body {
   background: #111;
 }
 
-/* ۱. کشیده شدن کامل عکس به اندازه ۳۰۰۰ پیکسل (بدون تکرار و کات) */
+/* دنیای بازی و پس‌زمینه یکپارچه (بدون زوم و بدون برش) */
 #world {
   position: absolute;
   top: 0;
@@ -35,9 +35,9 @@ html, body {
   height: 100vh;
   pointer-events: none;
   background-image: url('assets/bg2.png');
-  background-size: 3000px 100vh; /* دقیقا ۳۰۰۰ پیکسل عرض و ۱۰۰٪ ارتفاع */
+  background-size: 3000px 100%;
   background-position: left bottom;
-  background-repeat: no-repeat; /* عدم تکرار عکس */
+  background-repeat: no-repeat;
 }
 
 #player {
@@ -68,15 +68,15 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
-/* ۲. تنظیم جدید دکمه‌ها: تفکیک به چپ و راست صفحه */
+/* تنظیم دکمه‌ها در دو گوشه چپ و راست */
 #controls {
   position: fixed;
   inset: 0;
-  pointer-events: none; /* برای اینکه وسط صفحه کلیک‌پذیر بمونه */
+  pointer-events: none;
   z-index: 99999 !important;
 }
 
-/* دکمه‌های حرکت (گوشه پایین چپ) */
+/* دکمه‌های حرکت چپ و راست (گوشه پایین سمت چپ) */
 .move-btns {
   position: absolute;
   left: 20px;
@@ -87,7 +87,7 @@ html, body {
   direction: ltr;
 }
 
-/* دکمه پرش (گوشه پایین راست) */
+/* دکمه پرش (گوشه پایین سمت راست) */
 .jump-btn {
   position: absolute;
   right: 20px;
