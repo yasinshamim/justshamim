@@ -1,6 +1,5 @@
 const player = document.getElementById("player");
 const world = document.getElementById("world");
-const globalBg = document.getElementById("global-bg");
 const platformsContainer = document.getElementById("platforms");
 const heartsContainer = document.getElementById("hearts");
 const counter = document.getElementById("count");
@@ -31,14 +30,14 @@ let direction = 1;
 let collected = 0;
 let currentStage = 1;
 
-const groundHeight = 90;
-const playerWidth = 60;
-const playerHeight = 70;
+const groundHeight = 70;
+const playerWidth = 55;
+const playerHeight = 65;
 
 let moveLeftHeld = false;
 let moveRightHeld = false;
 
-// 100 Unique Messages for 10 Levels
+// Messages
 const allStageMessages = [
   // Stage 1
   [
@@ -61,7 +60,7 @@ const allStageMessages = [
     "لیس لیسی بهت فلفل کوچولو😭🌶",
     "چشات خیلیییی قشنگههه 😭💗",
     "قلبم فقط واسه تو جا داره 💗",
-    "ته همه آرزوهام  تویی ✨",
+    "ته همه آرزوهام تویی ✨",
     "بوس به لبت عاشقتم 😭💗",
     "همیشه پیشت میمونم قول میدم 😭🎀",
     "مرحله دو هم با عشق رفتی🤭💘"
@@ -184,18 +183,19 @@ function loadStage(stageNum) {
   counter.textContent = "0";
   stage.textContent = `مرحله ${stageNum}`;
 
+  // انتخاب پس‌زمینه (bg1.png تا bg10.png)
+  world.style.backgroundImage = `url('assets/bg${stageNum}.png')`;
+
   // Base Ground
   platforms.push({ x: 0, y: 0, width: worldWidth, height: groundHeight });
 
-  // Get current stage messages
   const currentMessages = allStageMessages[stageNum - 1] || allStageMessages[0];
 
-  // Procedural Platforms
   for (let i = 0; i < 9; i++) {
-    const platX = 250 + i * 290;
-    const platY = groundHeight + 80 + ((i + stageNum) % 3) * 60;
-    const platWidth = 140;
-    const platHeight = 20;
+    const platX = 260 + i * 290;
+    const platY = groundHeight + 60 + ((i + stageNum) % 3) * 50;
+    const platWidth = 130;
+    const platHeight = 18;
 
     platforms.push({ x: platX, y: platY, width: platWidth, height: platHeight });
 
@@ -207,13 +207,12 @@ function loadStage(stageNum) {
     platDiv.style.height = platHeight + "px";
     platformsContainer.appendChild(platDiv);
 
-    const heartX = platX + platWidth / 2 - 25;
-    const heartY = platY + 30;
+    const heartX = platX + platWidth / 2 - 22;
+    const heartY = platY + 25;
     createHeartDOM(heartX, heartY, currentMessages[i]);
   }
 
-  // 10th Heart
-  createHeartDOM(2800, groundHeight + 100, currentMessages[9]);
+  createHeartDOM(2820, groundHeight + 80, currentMessages[9]);
 
   playerX = 80;
   playerY = 0;
@@ -232,7 +231,6 @@ function createHeartDOM(x, y, message) {
   heartsContainer.appendChild(heartImg);
 }
 
-// Correct Control Mapping
 const bindControl = (btn, onPress, onRelease) => {
   if (!btn) return;
   btn.addEventListener("touchstart", (e) => { e.preventDefault(); onPress(); });
@@ -241,7 +239,6 @@ const bindControl = (btn, onPress, onRelease) => {
   btn.addEventListener("mouseup", onRelease);
 };
 
-// Left and Right buttons binding correctly
 bindControl(leftBtn, () => moveLeftHeld = true, () => moveLeftHeld = false);
 bindControl(rightBtn, () => moveRightHeld = true, () => moveRightHeld = false);
 
@@ -262,18 +259,18 @@ window.addEventListener("keyup", (e) => {
 
 function jump() {
   if (isGrounded) {
-    velocityY = 15;
+    velocityY = 14;
     isGrounded = false;
   }
 }
 
 function updatePhysics() {
   if (moveLeftHeld) {
-    playerX -= 8;
+    playerX -= 7;
     direction = -1;
   }
   if (moveRightHeld) {
-    playerX += 8;
+    playerX += 7;
     direction = 1;
   }
 
@@ -281,14 +278,14 @@ function updatePhysics() {
   if (playerX > worldWidth - playerWidth) playerX = worldWidth - playerWidth;
 
   playerY += velocityY;
-  velocityY -= 0.8;
+  velocityY -= 0.75;
 
   isGrounded = false;
   platforms.forEach(plat => {
     if (
       playerX + playerWidth > plat.x &&
       playerX < plat.x + plat.width &&
-      playerY >= plat.y + plat.height - groundHeight - 15 &&
+      playerY >= plat.y + plat.height - groundHeight - 12 &&
       playerY <= plat.y + plat.height - groundHeight + 5 &&
       velocityY <= 0
     ) {
@@ -316,10 +313,10 @@ function checkHearts() {
   hearts.forEach(heart => {
     if (heart.collected) return;
 
-    const dx = Math.abs((playerX + playerWidth / 2) - (heart.x + 25));
-    const dy = Math.abs((groundHeight + playerY + playerHeight / 2) - (heart.y + 25));
+    const dx = Math.abs((playerX + playerWidth / 2) - (heart.x + 22));
+    const dy = Math.abs((groundHeight + playerY + playerHeight / 2) - (heart.y + 22));
 
-    if (dx < 45 && dy < 50) {
+    if (dx < 40 && dy < 45) {
       heart.collected = true;
       heart.element.style.display = "none";
       collected++;
