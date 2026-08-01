@@ -53,7 +53,6 @@ html, body {
   line-height: 1.6;
 }
 
-/* نمایش پیغام چرخش فقط موقعی که گوشی عمودی است */
 @media (orientation: portrait) {
   #rotate-overlay {
     display: flex;
@@ -68,7 +67,7 @@ html, body {
   background: #111;
 }
 
-/* دنیای بازی و پس‌زمینه کشیده و متناسب در حالت افقی */
+/* حل مشکل زوم شدن پس‌زمینه */
 #world {
   position: absolute;
   top: 0;
@@ -76,17 +75,17 @@ html, body {
   width: 3000px;
   height: 100vh;
   pointer-events: none;
-  background-image: url('assets/bg1.png');
-  background-size: 3000px 100%;
   background-position: left bottom;
-  background-repeat: no-repeat;
+  background-repeat: repeat-x;
+  background-size: auto 100vh; /* تنظیم دقیق ارتفاع و جلوگیری از زوم نامتناسب */
 }
 
 #player {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 65px;
+  width: 60px;
+  height: auto;
   z-index: 10;
 }
 
@@ -110,7 +109,6 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
-/* کنترل‌های بازی مخصوص حالت افقی */
 #controls {
   position: fixed;
   inset: 0;
