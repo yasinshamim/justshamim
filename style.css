@@ -77,7 +77,7 @@ html, body {
   pointer-events: none;
   background-position: left bottom;
   background-repeat: repeat-x;
-  background-size: auto 100vh; /* تنظیم دقیق ارتفاع و جلوگیری از زوم نامتناسب */
+  background-size: auto 100vh;
 }
 
 #player {
@@ -109,6 +109,7 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
+/* استایل اصلاح‌شده دکمه‌های کنترل */
 #controls {
   position: fixed;
   inset: 0;
@@ -136,20 +137,25 @@ html, body {
 #controls button {
   width: 65px;
   height: 65px;
-  border: none;
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px);
-  font-size: 26px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  font-size: 24px;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s, transform 0.1s;
 }
 
 #controls button:active {
   transform: scale(0.88);
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.5);
+  color: #ff4d6d;
 }
 
 #platforms {
@@ -212,30 +218,83 @@ html, body {
   100% { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
+/* استایل کارت پایان رویایی و جذاب */
 #finishScreen {
   position: fixed;
   inset: 0;
   display: none;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  background: linear-gradient(180deg, #ffb347, #ff6b6b);
-  color: white;
-  z-index: 10000;
-  text-align: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(15px);
+  z-index: 100000;
   padding: 20px;
 }
 
-#finishScreen h1 { font-size: 32px; margin-bottom: 15px; }
-#finishScreen p { font-size: 18px; line-height: 1.6; max-width: 500px; }
+.finish-card {
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+  padding: 30px 25px;
+  border-radius: 25px;
+  text-align: center;
+  color: white;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 15px 35px rgba(255, 117, 140, 0.4);
+  animation: cardPopup 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes cardPopup {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.big-heart {
+  font-size: 60px;
+  animation: heartPulse 1.2s infinite ease-in-out;
+  margin-bottom: 10px;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.finish-card h1 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.final-text {
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+}
+
+.signature {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #fff0f3;
+}
 
 #restartBtn {
-  margin-top: 20px;
-  padding: 12px 30px;
-  font-size: 18px;
+  padding: 12px 35px;
+  font-size: 16px;
+  font-weight: bold;
   border: none;
-  border-radius: 40px;
+  border-radius: 30px;
   background: white;
   color: #ff4d6d;
   cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  transition: transform 0.2s;
+}
+
+#restartBtn:active {
+  transform: scale(0.92);
 }
