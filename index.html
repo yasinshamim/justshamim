@@ -9,6 +9,7 @@
 </head>
 <body>
 
+  <!-- هشدار چرخش گوشی -->
   <div id="rotate-overlay">
     <div class="rotate-content">
       <div class="phone-icon">📱</div>
@@ -21,14 +22,17 @@
     <div id="world">
       <div id="platforms"></div>
       <div id="hearts"></div>
-      <img id="player" src="assets/file_00000000b874820a9629fba9e.png" alt="Player">
+      <!-- اینجا اصلاح شد و دقیقاً ست شد با player.png -->
+      <img id="player" src="assets/player.png" alt="Player">
     </div>
 
+    <!-- اطلاعات بالای صفحه -->
     <div id="hud">
       <div id="heartCounter">💖 <span id="count">0</span>/10</div>
       <div id="stage">مرحله ۱</div>
     </div>
 
+    <!-- دکمه‌های بازی -->
     <div id="controls">
       <div class="move-btns">
         <button id="right">➔</button>
@@ -37,10 +41,12 @@
       <button id="jump" class="jump-btn">⬆</button>
     </div>
 
+    <!-- باکس نمایش پیام‌ها -->
     <div id="messageBox">
       <p id="messageText"></p>
     </div>
 
+    <!-- صفحه پایان -->
     <div id="finishScreen">
       <h1>تولدت مبارک عشقم! 🎉💖</h1>
       <p>تو قشنگ‌ترین اتفاق زندگی منی... مرسی که تا آخر بازی همراهم بودی 🥰</p>
