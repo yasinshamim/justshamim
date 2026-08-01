@@ -6,18 +6,43 @@ const counter = document.getElementById("count");
 const stage = document.getElementById("stage");
 const bgMusic = document.getElementById("bgMusic");
 
+// سیستم ورود و رمز عبور
+const loginOverlay = document.getElementById("loginOverlay");
+const loginCard = document.getElementById("loginCard");
+const passInput = document.getElementById("passInput");
+const startBtn = document.getElementById("startBtn");
+const errorMsg = document.getElementById("errorMsg");
+
+function checkPassword() {
+  const val = passInput.value.trim();
+  if (val === "1130" || val === "66") {
+    // پخش موزیک Vase.mp3 پس از تایید رمز
+    if (bgMusic) {
+      bgMusic.play().catch(() => {});
+    }
+    // محو شدن صفحه ورود
+    loginOverlay.style.opacity = "0";
+    loginOverlay.style.transition = "opacity 0.5s ease";
+    setTimeout(() => {
+      loginOverlay.style.display = "none";
+    }, 500);
+  } else {
+    // نمایش خطای رمز و لرزش کادر
+    errorMsg.style.display = "block";
+    errorMsg.textContent = "رمز اشتباهه عشقم! دوباره تلاش کن 💖";
+    loginCard.classList.add("shake");
+    setTimeout(() => loginCard.classList.remove("shake"), 400);
+  }
+}
+
+startBtn.addEventListener("click", checkPassword);
+passInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") checkPassword();
+});
+
 const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
 const jumpBtn = document.getElementById("jump");
-
-// پخش خودکار موزیک پس‌زمینه با اولین لمس
-const playAudio = () => {
-  if (bgMusic) bgMusic.play().catch(() => {});
-  document.removeEventListener("touchstart", playAudio);
-  document.removeEventListener("click", playAudio);
-};
-document.addEventListener("touchstart", playAudio);
-document.addEventListener("click", playAudio);
 
 const worldWidth = 3000;
 let cameraX = 0;
@@ -80,8 +105,8 @@ const allStageMessages = [
   ],
   // Stage 4
   [
-    "بوس تا ابد بهت🛐🛐",
-    "کاش بودم کلی بغلت میکزدم😭💗",
+    "خیلیی زیاد عاشقتمممم🛐🛐",
+    "میدونم الان تو دلت گفتی من بیشتر ولی واقعا من بیشتر از تو😭💗",
     "عشق واقعی یعنی تو 💖",
     "فقط کافیه 5 دقیقه باهات حرف بزنم تا حالم خوب بشه😭💗",
     "چجوری اینهمه خوشگلی فداتشم😭💘",
@@ -93,8 +118,8 @@ const allStageMessages = [
   ],
   // Stage 5
   [
-    "خیلییی زیاد عاشقتمممم😭💘",
-    "میدونم الان تو دلت گفتی من بیشتر ولی واقعا من بیشتر از تو💘😭",
+    "کاش پیشت بودم بغلت میکردم😭💘",
+    "بوس بوسی به چشات💘😭",
     "احتمالا الان خیلی ذوق ذوقی شدی 😭💘",
     "تو همه زندگی‌منی دختر😭💘",
     "هیچکس نمیتونه جاتو بگیره 😭💘",
@@ -121,7 +146,7 @@ const allStageMessages = [
   [
     "بوس به گردنتتت😭❤️",
     "فرشته کوچولوی من😭👼🏻",
-    "تو خاص‌ ترینی واسم 💎",
+    "سگتم خانوم هاپ هاپپبپیپتههپاپ 💎",   
     "زندگیم بعد تو>> 🛐🛐",
     "هر ثانیه‌ بوس بهت 🎀",
     "دوست داشتنت بهترین شغل منه🛐 ",
@@ -133,7 +158,7 @@ const allStageMessages = [
   // Stage 8
   [
     "اگه هزار بارم برگردم عقب تورو انتخاب میکنم 🛐",
-    "تو الماس منی 💎",
+    "قربون چشات برم قشنگ تر از قاصدک💎",
     "بوس بهت قلب من 😭💗",
     "خیلی عاشقتمم 💗",
     "مطمعنم توهم منو دوست داری😭💘",
@@ -183,15 +208,12 @@ function loadStage(stageNum) {
   counter.textContent = "0";
   stage.textContent = `مرحله ${stageNum}`;
 
-  // لود پس‌زمینه مخصوص مرحله
   world.style.backgroundImage = `url('assets/bg${stageNum}.png')`;
 
-  // سکوی زمین اصلی
   platforms.push({ x: 0, y: 0, width: worldWidth, height: groundHeight });
 
   const currentMessages = allStageMessages[stageNum - 1] || allStageMessages[0];
 
-  // ساخت سکوها و قلب‌ها
   for (let i = 0; i < 9; i++) {
     const platX = 260 + i * 290;
     const platY = groundHeight + 60 + ((i + stageNum) % 3) * 50;
@@ -213,7 +235,6 @@ function loadStage(stageNum) {
     createHeartDOM(heartX, heartY, currentMessages[i]);
   }
 
-  // قلب آخر مرحله
   createHeartDOM(2820, groundHeight + 80, currentMessages[9]);
 
   playerX = 80;
@@ -338,7 +359,7 @@ function showMessage(text) {
   msg.innerHTML = text;
   box.classList.add("show");
   clearTimeout(box.timer);
-  box.timer = setTimeout(() => box.classList.remove("show"), 2500);
+  box.timer = setTimeout(() => box.classList.remove("show"), 3200);
 }
 
 function nextStage() {
@@ -351,6 +372,7 @@ function nextStage() {
 }
 
 function finishGame() {
+  document.body.classList.add("game-over");
   document.getElementById("finishScreen").style.display = "flex";
   document.getElementById("game").style.pointerEvents = "none";
 }
