@@ -14,7 +14,117 @@ html, body {
   background: #111;
 }
 
-/* پیغام اجبار به افقی کردن گوشی */
+/* استایل صفحه ورود و رمز عبور */
+#loginOverlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #2c0b1e 0%, #0a0308 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999999;
+  padding: 20px;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 35px 25px;
+  border-radius: 30px;
+  text-align: center;
+  color: white;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 20px 50px rgba(255, 77, 109, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.login-card.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-10px); }
+  40%, 80% { transform: translateX(10px); }
+}
+
+.welcome-heart {
+  font-size: 55px;
+  margin-bottom: 10px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.login-card h1 {
+  font-size: 22px;
+  margin-bottom: 8px;
+  color: #ff758c;
+}
+
+.login-card p {
+  font-size: 14px;
+  color: #e0e0e0;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+#passInput {
+  width: 100%;
+  padding: 14px 20px;
+  border-radius: 25px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 3px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#passInput:focus {
+  border-color: #ff4d6d;
+}
+
+.error-msg {
+  color: #ff4d6d;
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 20px;
+  display: none;
+}
+
+#startBtn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #ff4d6d 0%, #ff758c 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
+  transition: transform 0.2s, background 0.3s;
+}
+
+#startBtn:active {
+  transform: scale(0.95);
+}
+
+/* هشدار چرخش گوشی */
 #rotate-overlay {
   position: fixed;
   inset: 0;
@@ -53,8 +163,12 @@ html, body {
   line-height: 1.6;
 }
 
+body:not(.game-over) #rotate-overlay {
+  display: none;
+}
+
 @media (orientation: portrait) {
-  #rotate-overlay {
+  body:not(.game-over) #rotate-overlay {
     display: flex;
   }
 }
@@ -67,7 +181,6 @@ html, body {
   background: #111;
 }
 
-/* حل مشکل زوم شدن پس‌زمینه */
 #world {
   position: absolute;
   top: 0;
@@ -109,7 +222,6 @@ html, body {
   backdrop-filter: blur(10px);
 }
 
-/* استایل اصلاح‌شده دکمه‌های کنترل */
 #controls {
   position: fixed;
   inset: 0;
@@ -218,29 +330,31 @@ html, body {
   100% { opacity: 1; transform: translateX(-50%) scale(1); }
 }
 
-/* استایل کارت پایان رویایی و جذاب */
+/* صفحه پایان با امکان چرخش عمودی */
 #finishScreen {
   position: fixed;
   inset: 0;
   display: none;
   justify-content: center;
   align-items: center;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(15px);
   z-index: 100000;
   padding: 20px;
+  overflow-y: auto;
 }
 
 .finish-card {
   background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
-  padding: 30px 25px;
+  padding: 30px 22px;
   border-radius: 25px;
   text-align: center;
   color: white;
-  max-width: 500px;
-  width: 90%;
+  max-width: 450px;
+  width: 100%;
   box-shadow: 0 15px 35px rgba(255, 117, 140, 0.4);
   animation: cardPopup 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin: auto;
 }
 
 @keyframes cardPopup {
@@ -249,41 +363,42 @@ html, body {
 }
 
 .big-heart {
-  font-size: 60px;
+  font-size: 55px;
   animation: heartPulse 1.2s infinite ease-in-out;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 @keyframes heartPulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+  50% { transform: scale(1.15); }
 }
 
 .finish-card h1 {
-  font-size: 24px;
-  margin-bottom: 15px;
+  font-size: 22px;
+  margin-bottom: 12px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .final-text {
   font-size: 15px;
   line-height: 1.8;
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.18);
   padding: 15px;
   border-radius: 15px;
   backdrop-filter: blur(5px);
+  text-align: center;
 }
 
 .signature {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #fff0f3;
 }
 
 #restartBtn {
-  padding: 12px 35px;
+  padding: 12px 32px;
   font-size: 16px;
   font-weight: bold;
   border: none;
@@ -298,3 +413,4 @@ html, body {
 #restartBtn:active {
   transform: scale(0.92);
 }
+
