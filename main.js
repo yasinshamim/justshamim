@@ -10,7 +10,7 @@ const leftBtn = document.getElementById("left");
 const rightBtn = document.getElementById("right");
 const jumpBtn = document.getElementById("jump");
 
-// Auto Play Music
+// پخش خودکار موزیک پس‌زمینه با اولین لمس
 const playAudio = () => {
   if (bgMusic) bgMusic.play().catch(() => {});
   document.removeEventListener("touchstart", playAudio);
@@ -37,7 +37,7 @@ const playerHeight = 65;
 let moveLeftHeld = false;
 let moveRightHeld = false;
 
-// Messages
+// متون پیام‌های مراحل ۱۰ گانه
 const allStageMessages = [
   // Stage 1
   [
@@ -183,14 +183,15 @@ function loadStage(stageNum) {
   counter.textContent = "0";
   stage.textContent = `مرحله ${stageNum}`;
 
-  // انتخاب پس‌زمینه (bg1.png تا bg10.png)
+  // لود پس‌زمینه مخصوص مرحله
   world.style.backgroundImage = `url('assets/bg${stageNum}.png')`;
 
-  // Base Ground
+  // سکوی زمین اصلی
   platforms.push({ x: 0, y: 0, width: worldWidth, height: groundHeight });
 
   const currentMessages = allStageMessages[stageNum - 1] || allStageMessages[0];
 
+  // ساخت سکوها و قلب‌ها
   for (let i = 0; i < 9; i++) {
     const platX = 260 + i * 290;
     const platY = groundHeight + 60 + ((i + stageNum) % 3) * 50;
@@ -212,6 +213,7 @@ function loadStage(stageNum) {
     createHeartDOM(heartX, heartY, currentMessages[i]);
   }
 
+  // قلب آخر مرحله
   createHeartDOM(2820, groundHeight + 80, currentMessages[9]);
 
   playerX = 80;
