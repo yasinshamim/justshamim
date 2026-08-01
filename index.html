@@ -9,6 +9,21 @@
 </head>
 <body>
 
+  <div id="loginOverlay">
+    <div class="login-card" id="loginCard">
+      <div class="welcome-heart">🔐💖</div>
+      <h1>سلام شمیم من! 🥰</h1>
+      <p>برای ورود به دنیای اختصاصی خودت، رمز رازیمون رو وارد کن:</p>
+      
+      <div class="input-group">
+        <input type="password" id="passInput" placeholder="رمز عبور..." pattern="[0-9]*" inputmode="numeric">
+        <p id="errorMsg" class="error-msg"></p>
+      </div>
+
+      <button id="startBtn">ورود و شروع بازی 🎮✨</button>
+    </div>
+  </div>
+
   <div id="rotate-overlay">
     <div class="rotate-content">
       <div class="phone-icon">📱</div>
@@ -44,7 +59,7 @@
     <div id="finishScreen">
       <div class="finish-card">
         <div class="big-heart">💖</div>
-        <h1>تولدت هزاران بار مبارک قشنگ‌ترینم! 🎉✨</h1>
+        <h1>تولدت هزار بار مبارک قشنگ‌ترینم! 🎉✨</h1>
         <p class="final-text">
           شمیم عزیزم... مرسی که به دنیا اومدی و شدی قشنگ‌ترین اتفاق زندگی من! 🥰<br>
           تو فقط عشقم نیستی، تمام آرامش و انگیزه منی. مرسی که تا آخرین مرحله بازی همراه من بودی...<br>
@@ -56,7 +71,7 @@
     </div>
   </div>
 
-  <audio id="bgMusic" src="assets/music.mp3" loop></audio>
+  <audio id="bgMusic" src="assets/Vase.mp3" loop></audio>
   <script src="main.js"></script>
 </body>
 </html>
